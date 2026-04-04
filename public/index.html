@@ -219,6 +219,50 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .ocr-preview.show { display: block; }
 .ocr-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 4px; }
 
+/* FOOTER */
+.app-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 20px 20px 28px;
+  margin-top: auto;
+}
+.footer-brand {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.footer-logo-mark {
+  width: 24px; height: 24px; border-radius: 6px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.footer-brand-name {
+  font-family: var(--font-display); font-size: 14px; color: var(--text);
+}
+.footer-brand-name span { color: var(--accent); }
+.footer-tagline {
+  font-size: 11px; color: var(--text-hint); margin-bottom: 16px; line-height: 1.5;
+}
+.footer-links {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+}
+.footer-link {
+  font-size: 12px; color: var(--text-muted); text-decoration: none;
+  padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--surface2); transition: all 0.15s;
+}
+.footer-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.footer-divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+.footer-legal {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 6px;
+}
+.footer-copy { font-size: 11px; color: var(--text-hint); }
+.footer-suite { font-size: 11px; color: var(--text-hint); }
+.footer-suite a { color: var(--accent); text-decoration: none; }
+.footer-suite a:hover { text-decoration: underline; }
+.footer-disclaimer {
+  margin-top: 12px; font-size: 10px; color: var(--text-hint); line-height: 1.6;
+  padding: 10px 12px; background: var(--surface2); border-radius: var(--radius-sm);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #141210; --surface: #1E1B18; --surface2: #2A2520;
@@ -732,5 +776,34 @@ function shareResult() {
   }
 }
 </script>
+
+<!-- FOOTER -->
+<footer class="app-footer" id="appFooter">
+  <div class="footer-brand">
+    <div class="footer-logo-mark">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <circle cx="6.5" cy="6.5" r="5.5" stroke="white" stroke-width="1.3"/>
+        <path d="M4 6.5l1.8 1.8L9 4.5" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="footer-brand-name">Trust<span>Smart</span> AI</span>
+  </div>
+  <div class="footer-tagline">Australia's genuineness checker — powered by Claude AI.<br>Part of the SmartLife AU product suite.</div>
+  <div class="footer-links">
+    <a class="footer-link" href="/privacy.html">Privacy Policy</a>
+    <a class="footer-link" href="/terms.html">Terms of Service</a>
+    <a class="footer-link" href="https://smartlifeau.com.au" target="_blank" rel="noopener">SmartLife AU</a>
+    <a class="footer-link" href="mailto:hello@smartlifeau.com.au">Contact</a>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-legal">
+    <span class="footer-copy">© 2025 SmartLife AU. All rights reserved.</span>
+    <span class="footer-suite">A <a href="https://smartlifeau.com.au" target="_blank" rel="noopener">SmartLife AU</a> product</span>
+  </div>
+  <div class="footer-disclaimer">
+    TrustSmart AI results are AI-generated and for informational purposes only. They do not constitute professional fact-checking, legal advice, or certified analysis. Always verify important information through authoritative sources.
+  </div>
+</footer>
+
 </body>
 </html>
