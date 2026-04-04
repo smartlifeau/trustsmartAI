@@ -16,9 +16,13 @@ exports.handler = async function (event) {
   }
 
   const { content, mode, imageData, imageMime } = body;
+  const now = new Date();
+  const todayStr = now.toLocaleDateString("en-AU", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "Australia/Sydney" });
+  const currentYear = now.getFullYear();
 
   const system = `You are TrustSmart AI, an Australian content verification assistant. Respond ONLY with raw JSON — no markdown, no backticks, no explanation text outside the JSON.
 
+IMPORTANT — TODAY'S DATE: ${todayStr} (Australian Eastern Time). The current year is ${currentYear}. Events from 2024 and early-to-mid 2025 are in the past. Do NOT flag past events as future purely on date. Never mark a claim as false solely because the date seems future — always check against today's actual date first.
 Return this exact structure:
 {
   "overallScore": <integer 0-100, 100=fully genuine>,
