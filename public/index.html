@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrustSmart AI — Australia's Genuineness Checker</title>
+<meta name="description" content="Check if content is genuine. Paste text, upload a screenshot, drop an image or link a URL — verified against trusted Australian sources.">
+<!-- GA4 placeholder — replace G-XXXXXXXXXX with your measurement ID -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F7F4EF;
+  --surface: #FFFFFF;
+  --surface2: #F0EDE7;
+  --border: rgba(60,50,30,0.12);
+  --border-med: rgba(60,50,30,0.22);
+  --text: #1A1714;
+  --text-muted: #7A7060;
+  --text-hint: #B0A898;
+  --accent: #1E4D3B;
+  --accent-light: #EAF3EE;
+  --genuine: #1E7A4B;
+  --genuine-bg: #E8F5EE;
+  --uncertain: #A85C00;
+  --uncertain-bg: #FFF4E6;
+  --false: #C0392B;
+  --false-bg: #FEF0EF;
+  --score-green: #27AE60;
+  --score-amber: #E67E22;
+  --score-red: #E74C3C;
+  --shadow: 0 2px 16px rgba(30,20,10,0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: var(--surface); position: sticky; top: 0; z-index: 10;
+}
+.logo { display: flex; align-items: center; gap: 9px; }
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 8px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-name { font-family: var(--font-display); font-size: 17px; color: var(--text); }
+.logo-name span { color: var(--accent); }
+.header-tag {
+  font-size: 11px; font-weight: 500; color: var(--text-muted);
+  background: var(--surface2); padding: 3px 9px; border-radius: 20px;
+  letter-spacing: 0.4px; text-transform: uppercase;
+}
+
+.input-hero { padding: 28px 20px 18px; text-align: center; }
+.input-hero h1 { font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -0.4px; margin-bottom: 8px; }
+.input-hero h1 em { color: var(--accent); font-style: italic; }
+.input-hero p { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 280px; margin: 0 auto; }
+
+.mode-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; padding: 0 16px; margin-bottom: 14px; }
+.mode-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 4px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--surface);
+  cursor: pointer; transition: all 0.15s; font-family: var(--font-body);
+}
+.mode-btn.active { border-color: var(--accent); background: var(--accent-light); }
+.mode-icon { width: 30px; height: 30px; border-radius: 7px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.mode-btn.active .mode-icon { background: rgba(30,77,59,0.12); }
+.mode-label { font-size: 10px; font-weight: 500; color: var(--text-muted); }
+.mode-btn.active .mode-label { color: var(--accent); }
+
+.input-area { padding: 0 16px; }
+.input-panel { display: none; }
+.input-panel.active { display: block; }
+
+.text-input-wrap { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.text-input-wrap:focus-within { border-color: var(--accent); }
+.text-input { width: 100%; min-height: 130px; padding: 14px; border: none; outline: none; resize: none; font-family: var(--font-body); font-size: 14px; color: var(--text); background: transparent; line-height: 1.6; }
+.text-input::placeholder { color: var(--text-hint); }
+.input-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-top: 1px solid var(--border); }
+.char-count { font-size: 11px; color: var(--text-hint); }
+
+.drop-zone {
+  border: 2px dashed var(--border-med); border-radius: var(--radius);
+  background: var(--surface); padding: 32px 16px; text-align: center;
+  cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); position: relative;
+}
+.drop-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+.drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.drop-icon { font-size: 32px; margin-bottom: 10px; }
+.drop-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.drop-sub { font-size: 12px; color: var(--text-muted); }
+.drop-formats { display: flex; gap: 5px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+.fmt-pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+.file-preview { display: none; align-items: center; gap: 10px; padding: 10px 14px; background: var(--accent-light); border-radius: var(--radius-sm); margin-top: 8px; }
+.file-preview.show { display: flex; }
+.file-preview-name { font-size: 13px; color: var(--accent); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.url-input-wrap { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; gap: 8px; padding: 12px 14px; box-shadow: var(--shadow); }
+.url-input-wrap:focus-within { border-color: var(--accent); }
+.url-input { flex: 1; border: none; outline: none; font-family: var(--font-body); font-size: 14px; color: var(--text); background: transparent; }
+.url-input::placeholder { color: var(--text-hint); }
+.url-hint { font-size: 11px; color: var(--text-hint); margin-top: 6px; padding: 0 2px; }
+
+.check-btn {
+  width: 100%; margin-top: 12px; padding: 15px;
+  background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.check-btn:hover { background: #163d2e; transform: translateY(-1px); }
+.check-btn:disabled { background: var(--text-hint); cursor: not-allowed; transform: none; }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(247,244,239,0.95);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 100; gap: 18px;
+}
+.loading-overlay.active { display: flex; }
+.spinner { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--surface2); border-top-color: var(--accent); animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-family: var(--font-display); font-size: 20px; color: var(--text); }
+.loading-steps { display: flex; flex-direction: column; gap: 5px; width: 210px; }
+.loading-step { font-size: 12px; color: var(--text-hint); display: flex; align-items: center; gap: 7px; transition: color 0.3s; }
+.loading-step.done { color: var(--genuine); }
+.loading-step.active-step { color: var(--text); font-weight: 500; }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-med); flex-shrink: 0; }
+.loading-step.done .step-dot { background: var(--genuine); }
+.loading-step.active-step .step-dot { background: var(--accent); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+#screen-results { background: var(--bg); }
+.result-content { padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; flex: 1; }
+
+.query-recap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: flex-start; gap: 8px; }
+.query-type-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; margin-top: 1px; background: var(--surface2); color: var(--text-muted); }
+.query-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; flex: 1; word-break: break-word; }
+
+.score-card { background: var(--surface); border-radius: var(--radius); padding: 20px 18px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.score-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.score-verdict { font-family: var(--font-display); font-size: 24px; letter-spacing: -0.3px; }
+.verdict-genuine { color: var(--genuine); }
+.verdict-uncertain { color: var(--uncertain); }
+.verdict-false { color: var(--false); }
+.score-number { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+.sn-genuine { background: var(--genuine-bg); color: var(--genuine); }
+.sn-uncertain { background: var(--uncertain-bg); color: var(--uncertain); }
+.sn-false { background: var(--false-bg); color: var(--false); }
+
+.bar-labels { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.bar-lbl { font-size: 10px; color: var(--text-hint); }
+.main-bar { height: 11px; border-radius: 7px; background: linear-gradient(to right, var(--score-green), var(--score-amber), var(--score-red)); position: relative; margin-bottom: 14px; }
+.bar-indicator { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 20px; height: 20px; border-radius: 50%; background: white; border: 3px solid var(--genuine); box-shadow: 0 2px 6px rgba(0,0,0,0.18); transition: left 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+
+.sub-bars { display: flex; flex-direction: column; gap: 7px; }
+.sub-bar-row { display: flex; align-items: center; gap: 8px; }
+.sub-label { font-size: 11px; color: var(--text-muted); width: 110px; flex-shrink: 0; }
+.sub-track { flex: 1; height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+.sub-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.fill-green { background: var(--score-green); }
+.fill-amber { background: var(--score-amber); }
+.fill-red { background: var(--score-red); }
+.sub-pct { font-size: 11px; font-weight: 600; width: 30px; text-align: right; }
+
+.section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+.claim-item { padding: 9px 10px; border-radius: var(--radius-sm); margin-bottom: 7px; display: flex; gap: 8px; align-items: flex-start; }
+.claim-item:last-child { margin-bottom: 0; }
+.claim-true { background: var(--genuine-bg); }
+.claim-false { background: var(--false-bg); }
+.claim-uncertain { background: var(--uncertain-bg); }
+.claim-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.claim-text { font-size: 12px; line-height: 1.5; }
+.claim-true .claim-text { color: #145033; }
+.claim-false .claim-text { color: #7B1212; }
+.claim-uncertain .claim-text { color: #7A4200; }
+
+.source-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; }
+.source-item:last-child { border-bottom: none; padding-bottom: 0; }
+.source-verdict-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.dot-confirms { background: var(--score-green); }
+.dot-contradicts { background: var(--score-red); }
+.dot-partial-src { background: var(--score-amber); }
+.source-body { flex: 1; }
+.source-name { font-size: 12px; font-weight: 500; color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
+.source-name:hover { text-decoration: underline; }
+.source-reason { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 3px; }
+.source-date { font-size: 10px; color: var(--text-hint); }
+.source-relation { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; padding: 2px 6px; border-radius: 20px; flex-shrink: 0; margin-top: 1px; white-space: nowrap; }
+.rel-confirms { background: var(--genuine-bg); color: var(--genuine); }
+.rel-contradicts { background: var(--false-bg); color: var(--false); }
+.rel-partial { background: var(--uncertain-bg); color: var(--uncertain); }
+
+.summary-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; line-height: 1.6; color: var(--text-muted); border-left: 3px solid var(--accent); }
+
+.share-row { display: flex; gap: 8px; padding-bottom: 8px; }
+.share-btn { flex: 1; padding: 11px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.15s; }
+.share-btn:hover { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+.share-btn.primary { background: var(--accent); color: white; border-color: var(--accent); flex: 2; }
+.share-btn.primary:hover { background: #163d2e; }
+
+.back-btn { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-size: 14px; cursor: pointer; background: none; border: none; font-family: var(--font-body); padding: 0; }
+.back-btn:hover { color: var(--text); }
+
+.error-box { background: var(--false-bg); border: 1px solid #f5c6c6; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: var(--false); line-height: 1.5; display: none; margin-top: 10px; }
+
+.ocr-preview { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 8px; max-height: 80px; overflow-y: auto; border: 1px solid var(--border); display: none; }
+.ocr-preview.show { display: block; }
+.ocr-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 4px; }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141210; --surface: #1E1B18; --surface2: #2A2520;
+    --border: rgba(255,240,210,0.09); --border-med: rgba(255,240,210,0.18);
+    --text: #F0EBE3; --text-muted: #9A9085; --text-hint: #5A5248;
+    --accent-light: #0F2B20; --genuine-bg: #0D2B1A;
+    --uncertain-bg: #2B1A08; --false-bg: #2B0D0D;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div style="text-align:center">
+    <div class="loading-title">Checking<span style="color:var(--accent)">...</span></div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:4px" id="loadingSubtext">Analysing against trusted AU sources</div>
+  </div>
+  <div class="spinner"></div>
+  <div class="loading-steps" id="loadingSteps">
+    <div class="loading-step" id="lstep0"><div class="step-dot"></div>Extracting content</div>
+    <div class="loading-step" id="lstep1"><div class="step-dot"></div>Detecting AI signals</div>
+    <div class="loading-step" id="lstep2"><div class="step-dot"></div>Identifying claims</div>
+    <div class="loading-step" id="lstep3"><div class="step-dot"></div>Matching AU sources</div>
+    <div class="loading-step" id="lstep4"><div class="step-dot"></div>Generating score</div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 1: INPUT ═══ -->
+<div class="screen active" id="screen-input">
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.5"/>
+          <path d="M5 8l2.2 2.2L11 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-name">Trust<span>Smart</span> AI</span>
+    </div>
+    <span class="header-tag">AU · Beta</span>
+  </header>
+
+  <div class="input-hero">
+    <h1>Is it <em>real?</em><br>Find out instantly.</h1>
+    <p>Paste text, upload a screenshot, drop an image, or link a URL — checked against trusted Australian sources.</p>
+  </div>
+
+  <div class="mode-selector">
+    <button class="mode-btn active" onclick="switchMode('text',this)">
+      <div class="mode-icon">✏️</div>
+      <span class="mode-label">Type / Paste</span>
+    </button>
+    <button class="mode-btn" onclick="switchMode('screenshot',this)">
+      <div class="mode-icon">📸</div>
+      <span class="mode-label">Screenshot</span>
+    </button>
+    <button class="mode-btn" onclick="switchMode('image',this)">
+      <div class="mode-icon">🖼</div>
+      <span class="mode-label">Image</span>
+    </button>
+    <button class="mode-btn" onclick="switchMode('url',this)">
+      <div class="mode-icon">🔗</div>
+      <span class="mode-label">URL / Link</span>
+    </button>
+  </div>
+
+  <div class="input-area">
+    <div class="input-panel active" id="panel-text">
+      <div class="text-input-wrap">
+        <textarea class="text-input" id="textInput"
+          placeholder="Paste a claim, news headline, WhatsApp message, or any content you want to verify…"
+          oninput="updateCharCount()"></textarea>
+        <div class="input-footer">
+          <span class="char-count" id="charCount">0 characters</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-panel" id="panel-screenshot">
+      <div class="drop-zone" id="screenshotZone">
+        <input type="file" accept="image/*" id="screenshotFile" onchange="handleFileUpload('screenshot', this)">
+        <div class="drop-icon">📸</div>
+        <div class="drop-title">Drop your screenshot here</div>
+        <div class="drop-sub">Text will be extracted automatically</div>
+        <div class="drop-formats">
+          <span class="fmt-pill">PNG</span><span class="fmt-pill">JPG</span>
+          <span class="fmt-pill">HEIC</span><span class="fmt-pill">WEBP</span>
+        </div>
+      </div>
+      <div class="file-preview" id="screenshotPreview">
+        <span>📄</span>
+        <span class="file-preview-name" id="screenshotName"></span>
+        <span style="font-size:11px;color:var(--text-hint);cursor:pointer" onclick="clearFile('screenshot')">✕</span>
+      </div>
+      <div class="ocr-preview" id="screenshotOCR">
+        <div class="ocr-label">Ready to analyse</div>
+        <div id="screenshotOCRText">Image loaded — text will be extracted when you check.</div>
+      </div>
+    </div>
+
+    <div class="input-panel" id="panel-image">
+      <div class="drop-zone" id="imageZone">
+        <input type="file" accept="image/*" id="imageFile" onchange="handleFileUpload('image', this)">
+        <div class="drop-icon">🖼</div>
+        <div class="drop-title">Upload an image to check</div>
+        <div class="drop-sub">AI detection + caption + claims check</div>
+        <div class="drop-formats">
+          <span class="fmt-pill">PNG</span><span class="fmt-pill">JPG</span>
+          <span class="fmt-pill">GIF</span><span class="fmt-pill">WEBP</span>
+        </div>
+      </div>
+      <div class="file-preview" id="imagePreview">
+        <span>🖼</span>
+        <span class="file-preview-name" id="imageName"></span>
+        <span style="font-size:11px;color:var(--text-hint);cursor:pointer" onclick="clearFile('image')">✕</span>
+      </div>
+    </div>
+
+    <div class="input-panel" id="panel-url">
+      <div class="url-input-wrap">
+        <span style="font-size:16px;flex-shrink:0">🔗</span>
+        <input type="url" class="url-input" id="urlInput"
+          placeholder="https://... paste any article or page URL">
+      </div>
+      <div class="url-hint">Works with news articles, Facebook posts, and web pages.</div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <button class="check-btn" id="checkBtn" onclick="runCheck()">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
+        <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Check genuineness
+    </button>
+  </div>
+
+  <div style="padding:20px 16px 8px;font-size:11px;color:var(--text-hint);letter-spacing:0.6px;text-transform:uppercase;font-weight:600">How it works</div>
+  <div style="padding:0 16px 24px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px">
+      <span style="font-size:16px;flex-shrink:0">🔍</span>
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">Claims extracted &amp; checked</div>
+        <div style="font-size:11px;color:var(--text-muted)">Every factual claim is identified and verified against sources</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px">
+      <span style="font-size:16px;flex-shrink:0">🇦🇺</span>
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">Australian sources first</div>
+        <div style="font-size:11px;color:var(--text-muted)">AAP FactCheck, ABC, ACCC, ABS, gov.au prioritised</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px">
+      <span style="font-size:16px;flex-shrink:0">📊</span>
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">Genuineness score + source trail</div>
+        <div style="font-size:11px;color:var(--text-muted)">One clear bar, plus every source linked with a reason</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 2: RESULTS ═══ -->
+<div class="screen" id="screen-results">
+  <header class="app-header">
+    <button class="back-btn" onclick="goBack()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <span class="header-tag">Results</span>
+  </header>
+
+  <div class="result-content">
+    <div class="query-recap">
+      <span class="query-type-badge" id="resultType">Text</span>
+      <span class="query-text" id="resultQuery"></span>
+    </div>
+
+    <div class="score-card">
+      <div class="score-header">
+        <div class="score-verdict" id="verdictLabel">Likely genuine</div>
+        <div class="score-number" id="scoreNumber">— / 100</div>
+      </div>
+      <div class="bar-labels">
+        <span class="bar-lbl">Genuine</span>
+        <span class="bar-lbl">Uncertain</span>
+        <span class="bar-lbl">False / AI</span>
+      </div>
+      <div class="main-bar">
+        <div class="bar-indicator" id="barIndicator" style="left:50%"></div>
+      </div>
+      <div class="sub-bars">
+        <div class="sub-bar-row">
+          <span class="sub-label">Factual accuracy</span>
+          <div class="sub-track"><div class="sub-fill" id="fill1"></div></div>
+          <span class="sub-pct" id="pct1">—</span>
+        </div>
+        <div class="sub-bar-row">
+          <span class="sub-label">Source backing</span>
+          <div class="sub-track"><div class="sub-fill" id="fill2"></div></div>
+          <span class="sub-pct" id="pct2">—</span>
+        </div>
+        <div class="sub-bar-row">
+          <span class="sub-label">Human authored</span>
+          <div class="sub-track"><div class="sub-fill" id="fill3"></div></div>
+          <span class="sub-pct" id="pct3">—</span>
+        </div>
+        <div class="sub-bar-row">
+          <span class="sub-label">Context accuracy</span>
+          <div class="sub-track"><div class="sub-fill" id="fill4"></div></div>
+          <span class="sub-pct" id="pct4">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <div class="section-card">
+      <div class="card-title">🔍 Claims found</div>
+      <div id="claimsList"></div>
+    </div>
+
+    <div class="section-card">
+      <div class="card-title">📎 Sources checked</div>
+      <div id="sourcesList"></div>
+    </div>
+
+    <div class="share-row">
+      <button class="share-btn" onclick="shareResult()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11L11.5 1M11.5 1H7.5M11.5 1v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Share
+      </button>
+      <button class="share-btn primary" onclick="goBack()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="white" stroke-width="1.3"/><path d="M4 6.5l1.8 1.8L9 4.5" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Check another
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentMode = 'text';
+let uploadedFiles = { screenshot: null, image: null };
+let uploadedBase64 = { screenshot: null, image: null };
+let stepInterval = null;
+
+function switchMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.input-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + mode).classList.add('active');
+  hideError();
+}
+
+function updateCharCount() {
+  const val = document.getElementById('textInput').value.length;
+  document.getElementById('charCount').textContent = val + ' characters';
+}
+
+function handleFileUpload(type, input) {
+  const file = input.files[0];
+  if (!file) return;
+  uploadedFiles[type] = file;
+  document.getElementById(type + 'Name').textContent = file.name;
+  document.getElementById(type + 'Preview').classList.add('show');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const base64 = e.target.result.split(',')[1];
+    uploadedBase64[type] = { data: base64, mediaType: file.type };
+    if (type === 'screenshot') {
+      document.getElementById('screenshotOCR').classList.add('show');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearFile(type) {
+  uploadedFiles[type] = null;
+  uploadedBase64[type] = null;
+  document.getElementById(type + 'File').value = '';
+  document.getElementById(type + 'Preview').classList.remove('show');
+  if (type === 'screenshot') document.getElementById('screenshotOCR').classList.remove('show');
+}
+
+function startLoadingSteps() {
+  const steps = ['lstep0','lstep1','lstep2','lstep3','lstep4'];
+  steps.forEach(s => {
+    const el = document.getElementById(s);
+    el.classList.remove('active-step','done');
+  });
+  let i = 0;
+  document.getElementById(steps[0]).classList.add('active-step');
+  stepInterval = setInterval(() => {
+    document.getElementById(steps[i]).classList.remove('active-step');
+    document.getElementById(steps[i]).classList.add('done');
+    i++;
+    if (i < steps.length) document.getElementById(steps[i]).classList.add('active-step');
+    else clearInterval(stepInterval);
+  }, 800);
+}
+
+function showLoading(text) {
+  document.getElementById('loadingSubtext').textContent = text || 'Analysing against trusted AU sources';
+  document.getElementById('loading').classList.add('active');
+  startLoadingSteps();
+}
+
+function hideLoading() {
+  clearInterval(stepInterval);
+  document.getElementById('loading').classList.remove('active');
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('errorBox').style.display = 'none';
+}
+
+async function runCheck() {
+  hideError();
+  const btn = document.getElementById('checkBtn');
+  let contentToCheck = '', inputLabel = '', queryDisplay = '', imagePayload = null;
+
+  if (currentMode === 'text') {
+    contentToCheck = document.getElementById('textInput').value.trim();
+    if (!contentToCheck) { showError('Please enter some text to check.'); return; }
+    inputLabel = 'Text';
+    queryDisplay = contentToCheck.substring(0, 200) + (contentToCheck.length > 200 ? '…' : '');
+  } else if (currentMode === 'screenshot') {
+    if (!uploadedBase64.screenshot) { showError('Please upload a screenshot first.'); return; }
+    imagePayload = uploadedBase64.screenshot;
+    inputLabel = 'Screenshot';
+    queryDisplay = uploadedFiles.screenshot.name;
+    contentToCheck = '[Screenshot]';
+  } else if (currentMode === 'image') {
+    if (!uploadedBase64.image) { showError('Please upload an image first.'); return; }
+    imagePayload = uploadedBase64.image;
+    inputLabel = 'Image';
+    queryDisplay = uploadedFiles.image.name;
+    contentToCheck = '[Image]';
+  } else if (currentMode === 'url') {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url || !url.startsWith('http')) { showError('Please enter a valid URL starting with https://'); return; }
+    inputLabel = 'URL';
+    queryDisplay = url;
+    contentToCheck = url;
+  }
+
+  btn.disabled = true;
+  showLoading(
+    currentMode === 'screenshot' ? 'Reading screenshot...' :
+    currentMode === 'image' ? 'Analysing image...' :
+    currentMode === 'url' ? 'Fetching and analysing URL...' : 'Analysing content...'
+  );
+
+  try {
+    const result = await callAPI(contentToCheck, currentMode, imagePayload);
+    hideLoading();
+    displayResults(result, inputLabel, queryDisplay);
+  } catch (err) {
+    hideLoading();
+    showError('Analysis failed: ' + err.message + '. Please try again.');
+  }
+  btn.disabled = false;
+}
+
+/* ─── API CALL — hits Netlify Function proxy, never exposes key to browser ─── */
+async function callAPI(content, mode, imagePayload) {
+  const body = { content, mode };
+  if (imagePayload) {
+    body.imageData = imagePayload.data;
+    body.imageMime = imagePayload.mediaType;
+  }
+
+  const response = await fetch('/api/check', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || `Server error ${response.status}`);
+  }
+
+  return response.json();
+}
+
+function displayResults(data, inputLabel, queryDisplay) {
+  document.getElementById('resultType').textContent = inputLabel;
+  document.getElementById('resultQuery').textContent = queryDisplay;
+
+  const score = Math.round(data.overallScore || 50);
+  const vType = data.verdictType || (score >= 65 ? 'genuine' : score >= 35 ? 'uncertain' : 'false');
+  const verdictMap = {
+    genuine: { label: data.verdict || 'Likely genuine', cls: 'verdict-genuine', scoreCls: 'sn-genuine' },
+    uncertain: { label: data.verdict || 'Uncertain — verify further', cls: 'verdict-uncertain', scoreCls: 'sn-uncertain' },
+    false: { label: data.verdict || 'Likely false or misleading', cls: 'verdict-false', scoreCls: 'sn-false' }
+  };
+  const v = verdictMap[vType] || verdictMap.uncertain;
+
+  document.getElementById('verdictLabel').textContent = v.label;
+  document.getElementById('verdictLabel').className = 'score-verdict ' + v.cls;
+  document.getElementById('scoreNumber').textContent = score + ' / 100';
+  document.getElementById('scoreNumber').className = 'score-number ' + v.scoreCls;
+
+  const barLeft = Math.round(5 + (100 - score) * 0.85) + '%';
+  const barColor = score >= 65 ? 'var(--score-green)' : score >= 35 ? 'var(--score-amber)' : 'var(--score-red)';
+  const indicator = document.getElementById('barIndicator');
+  indicator.style.borderColor = barColor;
+  setTimeout(() => { indicator.style.left = barLeft; }, 100);
+
+  const ss = data.subScores || {};
+  [
+    { id: 'fill1', pct: 'pct1', val: ss.factualAccuracy ?? 50 },
+    { id: 'fill2', pct: 'pct2', val: ss.sourceBacking ?? 50 },
+    { id: 'fill3', pct: 'pct3', val: ss.humanAuthored ?? 50 },
+    { id: 'fill4', pct: 'pct4', val: ss.contextAccuracy ?? 50 }
+  ].forEach(({ id, pct, val }, i) => {
+    const v = Math.round(val);
+    const fillEl = document.getElementById(id);
+    const pctEl = document.getElementById(pct);
+    fillEl.style.width = '0%';
+    fillEl.className = 'sub-fill ' + (v >= 65 ? 'fill-green' : v >= 35 ? 'fill-amber' : 'fill-red');
+    pctEl.style.color = v >= 65 ? 'var(--score-green)' : v >= 35 ? 'var(--score-amber)' : 'var(--score-red)';
+    pctEl.textContent = v + '%';
+    setTimeout(() => { fillEl.style.width = v + '%'; }, 150 + i * 80);
+  });
+
+  document.getElementById('summaryBox').textContent = data.summary || '';
+
+  const claimsList = document.getElementById('claimsList');
+  claimsList.innerHTML = '';
+  const claims = data.claims || [];
+  if (!claims.length) {
+    claimsList.innerHTML = '<div style="font-size:12px;color:var(--text-muted)">No specific claims identified.</div>';
+  } else {
+    claims.forEach(c => {
+      const cls = c.status === 'confirmed' ? 'claim-true' : c.status === 'false' ? 'claim-false' : 'claim-uncertain';
+      const icon = c.status === 'confirmed' ? '✓' : c.status === 'false' ? '✕' : '~';
+      const div = document.createElement('div');
+      div.className = 'claim-item ' + cls;
+      div.innerHTML = `<span class="claim-icon">${icon}</span><span class="claim-text"><strong>${esc(c.text)}</strong> — ${esc(c.detail || '')}</span>`;
+      claimsList.appendChild(div);
+    });
+  }
+
+  const sourcesList = document.getElementById('sourcesList');
+  sourcesList.innerHTML = '';
+  const sources = data.sources || [];
+  if (!sources.length) {
+    sourcesList.innerHTML = '<div style="font-size:12px;color:var(--text-muted)">No specific sources identified.</div>';
+  } else {
+    sources.forEach(s => {
+      const dotCls = s.relation === 'confirms' ? 'dot-confirms' : s.relation === 'contradicts' ? 'dot-contradicts' : 'dot-partial-src';
+      const relCls = s.relation === 'confirms' ? 'rel-confirms' : s.relation === 'contradicts' ? 'rel-contradicts' : 'rel-partial';
+      const relLabel = s.relation === 'confirms' ? 'Confirms' : s.relation === 'contradicts' ? 'Contradicts' : 'Nuance';
+      const url = s.url && s.url !== '#' ? s.url : '#';
+      const div = document.createElement('div');
+      div.className = 'source-item';
+      div.innerHTML = `
+        <div class="source-verdict-dot ${dotCls}"></div>
+        <div class="source-body">
+          <a class="source-name" href="${esc(url)}" target="_blank" rel="noopener">
+            ${esc(s.name || s.organisation || 'Source')}
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 8.5L8.5 1.5M8.5 1.5H5M8.5 1.5v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <div class="source-reason">${esc(s.reason || '')}</div>
+          <div class="source-date">${esc(s.organisation || '')}${s.date ? ' · ' + s.date : ''}</div>
+        </div>
+        <span class="source-relation ${relCls}">${relLabel}</span>`;
+      sourcesList.appendChild(div);
+    });
+  }
+
+  document.getElementById('screen-input').classList.remove('active');
+  document.getElementById('screen-results').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function goBack() {
+  document.getElementById('screen-results').classList.remove('active');
+  document.getElementById('screen-input').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function shareResult() {
+  const verdict = document.getElementById('verdictLabel').textContent;
+  const score = document.getElementById('scoreNumber').textContent;
+  const text = `TrustSmart AI check: ${verdict} (${score})\nChecked via TrustSmart AI — Australia's genuineness checker`;
+  if (navigator.share) {
+    navigator.share({ title: 'TrustSmart AI Result', text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    alert('Result copied to clipboard!');
+  }
+}
+</script>
+</body>
+</html>

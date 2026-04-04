@@ -1,0 +1,8 @@
+{
+  "name": "trustsmart-ai",
+  "version": "1.0.0",
+  "description": "TrustSmart AI — Australia's genuineness checker",
+  "engines": {
+    "node": ">=18"
+  }
+}
