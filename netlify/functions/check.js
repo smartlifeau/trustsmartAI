@@ -16,13 +16,19 @@ exports.handler = async function (event) {
   }
 
   const { content, mode, imageData, imageMime } = body;
+
+  // Inject real-time date so Claude never flags past events as "future"
   const now = new Date();
-  const todayStr = now.toLocaleDateString("en-AU", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "Australia/Sydney" });
+  const todayStr = now.toLocaleDateString("en-AU", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+    timeZone: "Australia/Sydney"
+  });
   const currentYear = now.getFullYear();
 
   const system = `You are TrustSmart AI, an Australian content verification assistant. Respond ONLY with raw JSON — no markdown, no backticks, no explanation text outside the JSON.
 
-IMPORTANT — TODAY'S DATE: ${todayStr} (Australian Eastern Time). The current year is ${currentYear}. Events from 2024 and early-to-mid 2025 are in the past. Do NOT flag past events as future purely on date. Never mark a claim as false solely because the date seems future — always check against today's actual date first.
+IMPORTANT — TODAY'S DATE: ${todayStr} (Australian Eastern Time). The current year is ${currentYear}. You must use this as your reference point for all date-related reasoning. Events from 2024 and early-to-mid 2025 are in the past. Do NOT flag past events as future or unverified purely on the basis of date. Your training data may have a cutoff earlier than today — acknowledge uncertainty about very recent events (last 1-2 months) but do not treat clearly past events as future.
+
 Return this exact structure:
 {
   "overallScore": <integer 0-100, 100=fully genuine>,
@@ -44,7 +50,8 @@ Rules:
 - Screenshots/images: read visible text first, then fact-check it
 - URLs: check domain legitimacy (fake AU news domains score very low), then assess claims
 - 2-5 claims, 2-4 sources
-- verdictType: "genuine" if overallScore>=65, "uncertain" if 35-64, "false" if <35`;
+- verdictType: "genuine" if overallScore>=65, "uncertain" if 35-64, "false" if <35
+- Never mark a claim as false solely because the date seems future — always check against today's actual date first`;
 
   let userMsg;
   if (imageData && imageMime) {
@@ -73,8 +80,8 @@ Rules:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],        
+        max_tokens: 1500,
+        system,
         messages: [{ role: "user", content: userMsg }]
       })
     });

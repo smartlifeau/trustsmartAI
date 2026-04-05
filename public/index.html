@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TrustSmart AI — Australia's Genuineness Checker</title>
 <meta name="description" content="Check if content is genuine. Paste text, upload a screenshot, drop an image or link a URL — verified against trusted Australian sources.">
+<!-- GA4 placeholder — replace G-XXXXXXXXXX with your measurement ID -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -216,6 +219,94 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .ocr-preview.show { display: block; }
 .ocr-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 4px; }
 
+/* USAGE COUNTER */
+.usage-bar-wrap {
+  margin: 0 16px 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+}
+.usage-bar-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 7px;
+}
+.usage-label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.usage-count { font-size: 11px; font-weight: 700; color: var(--accent); }
+.usage-count.warn { color: var(--uncertain); }
+.usage-count.empty { color: var(--false); }
+.usage-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.usage-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+.usage-fill.warn { background: var(--uncertain); }
+.usage-fill.empty { background: var(--false); }
+.usage-reset { font-size: 10px; color: var(--text-hint); margin-top: 5px; }
+
+/* PAYWALL MODAL */
+.paywall-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(10,8,5,0.85); backdrop-filter: blur(6px);
+  display: none; align-items: flex-end; justify-content: center;
+  padding-bottom: 0;
+}
+.paywall-overlay.active { display: flex; }
+.paywall-sheet {
+  background: var(--surface); border-radius: 24px 24px 0 0;
+  padding: 28px 24px 40px; width: 100%; max-width: 480px;
+  border-top: 1px solid var(--border);
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.paywall-pill {
+  width: 36px; height: 4px; background: var(--border-med);
+  border-radius: 2px; margin: 0 auto 20px;
+}
+.paywall-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+.paywall-title {
+  font-family: var(--font-display); font-size: 22px;
+  text-align: center; margin-bottom: 8px; letter-spacing: -0.3px;
+}
+.paywall-title span { color: var(--accent); font-style: italic; }
+.paywall-sub {
+  font-size: 13px; color: var(--text-muted); text-align: center;
+  line-height: 1.6; margin-bottom: 22px;
+}
+.paywall-features {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px;
+}
+.paywall-feature {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-muted);
+}
+.paywall-feature-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--accent-light); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0;
+}
+.paywall-price {
+  background: var(--accent-light); border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.paywall-price-amount {
+  font-family: var(--font-display); font-size: 26px;
+  color: var(--accent); letter-spacing: -0.5px;
+}
+.paywall-price-detail { font-size: 11px; color: var(--text-muted); text-align: right; line-height: 1.5; }
+.paywall-cta {
+  width: 100%; padding: 15px; background: var(--accent); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  cursor: pointer; margin-bottom: 10px; transition: background 0.15s;
+}
+.paywall-cta:hover { background: #163d2e; }
+.paywall-dismiss {
+  width: 100%; padding: 11px; background: none; color: var(--text-muted);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 13px; cursor: pointer;
+  transition: all 0.15s;
+}
+.paywall-dismiss:hover { border-color: var(--text-muted); color: var(--text); }
+.paywall-note { font-size: 10px; color: var(--text-hint); text-align: center; margin-top: 10px; }
+
 /* FOOTER */
 .app-footer {
   border-top: 1px solid var(--border);
@@ -320,6 +411,18 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="input-hero">
     <h1>Is it <em>real?</em><br>Find out instantly.</h1>
     <p>Paste text, upload a screenshot, drop an image, or link a URL — checked against trusted Australian sources.</p>
+  </div>
+
+  <!-- USAGE COUNTER -->
+  <div class="usage-bar-wrap" id="usageBarWrap">
+    <div class="usage-bar-top">
+      <span class="usage-label">Free checks today</span>
+      <span class="usage-count" id="usageCount">5 of 5 remaining</span>
+    </div>
+    <div class="usage-track">
+      <div class="usage-fill" id="usageFill" style="width:100%"></div>
+    </div>
+    <div class="usage-reset" id="usageReset">Resets at midnight AEST</div>
   </div>
 
   <div class="mode-selector">
@@ -525,6 +628,78 @@ let uploadedFiles = { screenshot: null, image: null };
 let uploadedBase64 = { screenshot: null, image: null };
 let stepInterval = null;
 
+/* ─── FREEMIUM USAGE TRACKING ─── */
+const FREE_LIMIT = 5;
+const STORAGE_KEY = 'ts_usage';
+
+function getTodayKey() {
+  return new Date().toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' });
+}
+
+function getUsage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { date: getTodayKey(), count: 0 };
+    const data = JSON.parse(raw);
+    // Reset if it's a new day
+    if (data.date !== getTodayKey()) return { date: getTodayKey(), count: 0 };
+    return data;
+  } catch { return { date: getTodayKey(), count: 0 }; }
+}
+
+function saveUsage(usage) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(usage)); } catch {}
+}
+
+function getRemainingChecks() {
+  return Math.max(0, FREE_LIMIT - getUsage().count);
+}
+
+function incrementUsage() {
+  const usage = getUsage();
+  usage.count += 1;
+  saveUsage(usage);
+}
+
+function updateUsageUI() {
+  const remaining = getRemainingChecks();
+  const pct = (remaining / FREE_LIMIT) * 100;
+
+  const countEl = document.getElementById('usageCount');
+  const fillEl = document.getElementById('usageFill');
+  const resetEl = document.getElementById('usageReset');
+
+  countEl.textContent = remaining === 0
+    ? 'No free checks remaining'
+    : `${remaining} of ${FREE_LIMIT} remaining`;
+
+  countEl.className = 'usage-count' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
+  fillEl.className = 'usage-fill' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
+  fillEl.style.width = pct + '%';
+
+  if (remaining === 0) {
+    resetEl.textContent = 'Resets at midnight AEST — or upgrade to Pro for unlimited';
+    document.getElementById('checkBtn').disabled = true;
+    document.getElementById('checkBtn').textContent = '🔒 Upgrade for more checks';
+  } else if (remaining === 1) {
+    resetEl.textContent = 'Last free check today — upgrade to Pro for unlimited';
+  }
+}
+
+function showPaywall() {
+  document.getElementById('paywallOverlay').classList.add('active');
+}
+
+function dismissPaywall() {
+  document.getElementById('paywallOverlay').classList.remove('active');
+}
+
+function goToPro() {
+  // Replace this URL with your Stripe payment link when ready
+  window.open('mailto:hello@smartlifeau.com.au?subject=TrustSmart AI Pro&body=Hi, I would like to upgrade to TrustSmart AI Pro.', '_blank');
+  dismissPaywall();
+}
+
 function switchMode(mode, btn) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -604,6 +779,13 @@ function hideError() {
 
 async function runCheck() {
   hideError();
+
+  // Check usage limit before doing anything
+  if (getRemainingChecks() === 0) {
+    showPaywall();
+    return;
+  }
+
   const btn = document.getElementById('checkBtn');
   let contentToCheck = '', inputLabel = '', queryDisplay = '', imagePayload = null;
 
@@ -642,6 +824,8 @@ async function runCheck() {
   try {
     const result = await callAPI(contentToCheck, currentMode, imagePayload);
     hideLoading();
+    incrementUsage();
+    updateUsageUI();
     displayResults(result, inputLabel, queryDisplay);
   } catch (err) {
     hideLoading();
@@ -785,6 +969,9 @@ function shareResult() {
     alert('Result copied to clipboard!');
   }
 }
+
+// Initialise usage counter on load
+updateUsageUI();
 </script>
 
 <!-- FOOTER -->
@@ -814,6 +1001,44 @@ function shareResult() {
     TrustSmart AI results are AI-generated and for informational purposes only. They do not constitute professional fact-checking, legal advice, or certified analysis. Always verify important information through authoritative sources.
   </div>
 </footer>
+
+<!-- PAYWALL MODAL -->
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-sheet">
+    <div class="paywall-pill"></div>
+    <div class="paywall-icon">🔍</div>
+    <div class="paywall-title">You've used your <span>free checks</span></div>
+    <div class="paywall-sub">You've used all 5 free checks for today. Upgrade to Pro for unlimited checks, priority analysis, and no daily limits.</div>
+    <div class="paywall-features">
+      <div class="paywall-feature">
+        <div class="paywall-feature-icon">♾️</div>
+        Unlimited genuineness checks every day
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-icon">⚡</div>
+        Priority processing — faster results
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-icon">🇦🇺</div>
+        Full Australian source library
+      </div>
+      <div class="paywall-feature">
+        <div class="paywall-feature-icon">📊</div>
+        Detailed analysis history
+      </div>
+    </div>
+    <div class="paywall-price">
+      <div>
+        <div class="paywall-price-amount">$7<span style="font-size:16px;color:var(--text-muted)">.99</span></div>
+        <div style="font-size:11px;color:var(--text-muted)">AUD per month</div>
+      </div>
+      <div class="paywall-price-detail">Cancel anytime<br>No lock-in contract</div>
+    </div>
+    <button class="paywall-cta" onclick="goToPro()">Upgrade to Pro →</button>
+    <button class="paywall-dismiss" onclick="dismissPaywall()">Maybe later — wait until tomorrow</button>
+    <div class="paywall-note">Free checks reset at midnight AEST · Powered by Claude AI</div>
+  </div>
+</div>
 
 </body>
 </html>
