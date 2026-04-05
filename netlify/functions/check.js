@@ -73,8 +73,8 @@ Rules:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1500,
-        system,
+        max_tokens: 2000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],        
         messages: [{ role: "user", content: userMsg }]
       })
     });
