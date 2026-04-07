@@ -351,6 +351,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   padding: 10px 12px; background: var(--surface2); border-radius: var(--radius-sm);
 }
 
+/* CLERK USER BAR */
+.user-bar {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 16px; background: var(--accent-light);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.user-bar.visible { display: flex; }
+.user-bar-name { flex: 1; font-weight: 500; color: var(--accent); }
+.user-bar-signout {
+  font-size: 11px; color: var(--text-muted); background: none;
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 3px 10px; cursor: pointer; font-family: var(--font-body);
+  transition: all 0.15s;
+}
+.user-bar-signout:hover { border-color: var(--false); color: var(--false);
+}
+
 </style>
 
 <!-- Google tag (gtag.js) -->
@@ -364,6 +382,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </script>
 
 <meta name="google-site-verification" content="LsVMwODY6aaYGrtPr-spisIi7Zaq1lYWlm8gcmD4nhs" />
+
+<!-- Clerk Auth -->
+<script async crossorigin="anonymous"
+  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  data-clerk-publishable-key="pk_test_ZGVhci1raXR0ZW4tNzIuY2xlcmsuYWNjb3VudHMuZGV2JA">
+</script>
 
 </head>
 <body>
@@ -386,6 +410,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <!-- ═══ SCREEN 1: INPUT ═══ -->
 <div class="screen active" id="screen-input">
+  <div class="user-bar" id="userBar">
+    <span>👤</span>
+    <span class="user-bar-name" id="userBarName"></span>
+    <button class="user-bar-signout" onclick="signOut()">Sign out</button>
+  </div>
   <header class="app-header">
     <div class="logo">
       <div class="logo-mark">
@@ -1056,9 +1085,14 @@ function downloadResult() {
   URL.revokeObjectURL(url);
 }
 
-  // Check if returning from Stripe payment
+// ─── CLERK AUTH INIT ───
+async function initClerk() {
+  await window.Clerk.load();
+
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('upgraded') === 'true') {
+  const justUpgraded = urlParams.get('upgraded') === 'true';
+
+  if (justUpgraded) {
     try {
       localStorage.setItem('ts_pro', 'true');
       localStorage.removeItem('ts_usage');
@@ -1066,8 +1100,45 @@ function downloadResult() {
     window.history.replaceState({}, '', '/');
   }
 
-// Initialise usage counter on load
-updateUsageUI();
+  const user = window.Clerk.user;
+
+  if (user) {
+    showUserBar(user);
+  } else {
+    // Not signed in — show Clerk sign-in modal
+    window.Clerk.openSignIn({
+      afterSignInUrl: window.location.href,
+      afterSignUpUrl: window.location.href
+    });
+  }
+
+  updateUsageUI();
+}
+
+function showUserBar(user) {
+  const name = user.firstName || user.emailAddresses?.[0]?.emailAddress || 'User';
+  document.getElementById('userBarName').textContent = '👋 Hi, ' + name;
+  document.getElementById('userBar').classList.add('visible');
+}
+
+async function signOut() {
+  await window.Clerk.signOut();
+  document.getElementById('userBar').classList.remove('visible');
+  window.Clerk.openSignIn({
+    afterSignInUrl: window.location.href,
+    afterSignUpUrl: window.location.href
+  });
+}
+
+// Wait for Clerk script to load then init
+window.addEventListener('load', () => {
+  if (window.Clerk) {
+    initClerk();
+  } else {
+    document.addEventListener('clerk-loaded', initClerk);
+  }
+});
+
 </script>
 
 <!-- PAYWALL MODAL -->
