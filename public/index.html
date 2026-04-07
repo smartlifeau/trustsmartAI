@@ -647,6 +647,9 @@ function saveUsage(usage) {
 }
 
 function getRemainingChecks() {
+  try {
+    if (localStorage.getItem('ts_pro') === 'true') return 999;
+  } catch {}
   return Math.max(0, FREE_LIMIT - getUsage().count);
 }
 
@@ -657,6 +660,19 @@ function incrementUsage() {
 }
 
 function updateUsageUI() {
+  try {
+    if (localStorage.getItem('ts_pro') === 'true') {
+      document.getElementById('usageBarWrap').style.display = 'none';
+      document.getElementById('checkBtn').disabled = false;
+      document.getElementById('checkBtn').innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+          <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
+          <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Check genuineness`;
+      return;
+    }
+  } catch {}
   const remaining = getRemainingChecks();
   const pct = (remaining / FREE_LIMIT) * 100;
 
@@ -1039,6 +1055,16 @@ function downloadResult() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+  // Check if returning from Stripe payment
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('upgraded') === 'true') {
+    try {
+      localStorage.setItem('ts_pro', 'true');
+      localStorage.removeItem('ts_usage');
+    } catch {}
+    window.history.replaceState({}, '', '/');
+  }
 
 // Initialise usage counter on load
 updateUsageUI();
