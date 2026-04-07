@@ -1,5 +1,3 @@
-const stripe = require('stripe');
-
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -7,38 +5,33 @@ exports.handler = async function (event) {
 
   const sig = event.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
+
+  if (!sig || !webhookSecret) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Missing signature or secret' }) };
+  }
 
   let stripeEvent;
   try {
-    stripeEvent = stripeClient.webhooks.constructEvent(
-      event.body,
-      sig,
-      webhookSecret
-    );
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    stripeEvent = stripe.webhooks.constructEvent(event.body, sig, webhookSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return { statusCode: 400, body: Webhook Error: ${err.message} };
+    console.error('Webhook error:', err.message);
+    return { statusCode: 400, body: JSON.stringify({ error: err.message }) };
   }
 
   const data = stripeEvent.data.object;
 
-  switch (stripeEvent.type) {
-    case 'customer.subscription.created':
-    case 'invoice.payment_succeeded':
-      // Store Pro status — we use Stripe customer email as the key
-      console.log('Pro activated for:', data.customer_email || data.customer);
-      // TODO: when Clerk is added, update user metadata here
-      break;
-
-    case 'customer.subscription.deleted':
-      console.log('Pro cancelled for:', data.customer);
-      // TODO: when Clerk is added, remove Pro status here
-      break;
-
-    default:
-      console.log('Unhandled event type:', stripeEvent.type);
+  if (stripeEvent.type === 'customer.subscription.created' || stripeEvent.type === 'invoice.payment_succeeded') {
+    console.log('Pro activated:', data.customer);
   }
 
-  return { statusCode: 200, body: JSON.stringify({ received: true }) };
+  if (stripeEvent.type === 'customer.subscription.deleted') {
+    console.log('Pro cancelled:', data.customer);
+  }
+
+  return {
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ received: true })
+  };
 };
