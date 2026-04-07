@@ -1153,13 +1153,21 @@ async function signOut() {
 }
 
 // Initialise Clerk after DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.Clerk) {
-    initClerk();
-  } else {
-    console.warn('Clerk script not found — check the <head> script tag');
-  }
-});
+if ( document.readyState === 'loading') {
+  addEventListener('DOMContentLoaded', () => {
+    if (window.Clerk) {
+      initClerk();
+    } else {
+      console.warn('Clerk not found');
+    }
+  });
+} else {
+    if (window.Clerk) {
+      initClerk();
+    } else {
+      console.warn('Clerk not found');
+    }
+}
 
 </script>
 
