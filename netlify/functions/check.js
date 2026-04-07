@@ -79,8 +79,8 @@ Rules:
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1500,
+        model: "claude-sonnet-4-5-20250929",
+        max_tokens: 2000,
         system,
         tools:[{ type: "web_search-20250305", nae: "web_search" }],
         messages: [{ role: "user", content: userMsg }]
