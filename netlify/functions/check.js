@@ -82,6 +82,7 @@ Rules:
         model: "claude-sonnet-4-20250514",
         max_tokens: 1500,
         system,
+        tools:[{ type: "web_search-20250305", nae: "web_search" }],
         messages: [{ role: "user", content: userMsg }]
       })
     });
