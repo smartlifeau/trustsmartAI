@@ -1087,8 +1087,6 @@ function downloadResult() {
 
 // ─── CLERK AUTH INIT ───
 async function initClerk() {
-  await window.Clerk.load();
-
   const urlParams = new URLSearchParams(window.location.search);
   const justUpgraded = urlParams.get('upgraded') === 'true';
 
@@ -1100,12 +1098,13 @@ async function initClerk() {
     window.history.replaceState({}, '', '/');
   }
 
+  await window.Clerk.load();
+
   const user = window.Clerk.user;
 
   if (user) {
-    showUserBar(user);
+    showUserBar(user, justUpgraded);
   } else {
-    // Not signed in — show Clerk sign-in modal
     window.Clerk.openSignIn({
       afterSignInUrl: window.location.href,
       afterSignUpUrl: window.location.href
@@ -1115,9 +1114,16 @@ async function initClerk() {
   updateUsageUI();
 }
 
-function showUserBar(user) {
+function showUserBar(user, justUpgraded) {
   const name = user.firstName || user.emailAddresses?.[0]?.emailAddress || 'User';
-  document.getElementById('userBarName').textContent = '👋 Hi, ' + name;
+  const barName = document.getElementById('userBarName');
+  if (justUpgraded) {
+    barName.innerHTML = '🎉 Welcome to Pro, ' + name + '!';
+    document.getElementById('userBar').style.background = 'var(--genuine-bg)';
+    document.getElementById('userBar').style.borderBottom = '1px solid var(--genuine)';
+  } else {
+    barName.textContent = '👋 Hi, ' + name;
+  }
   document.getElementById('userBar').classList.add('visible');
 }
 
@@ -1130,14 +1136,19 @@ async function signOut() {
   });
 }
 
-// Wait for Clerk script to load then init
-window.addEventListener('load', () => {
-  if (window.Clerk) {
-    initClerk();
-  } else {
-    document.addEventListener('clerk-loaded', initClerk);
-  }
-});
+// Wait for Clerk script to be ready
+if (window.Clerk) {
+  initClerk();
+} else {
+  window.addEventListener('load', () => {
+    const interval = setInterval(() => {
+      if (window.Clerk) {
+        clearInterval(interval);
+        initClerk();
+      }
+    }, 100);
+  });
+}
 
 </script>
 
