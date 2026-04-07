@@ -720,6 +720,7 @@ function updateUsageUI() {
   if (remaining === 0) {
     resetEl.textContent = 'Resets at midnight AEST — or upgrade to Pro for unlimited';
     document.getElementById('checkBtn').disabled = true;
+    document.getElementById('checkBtn').onclick = showPaywall;
     document.getElementById('checkBtn').textContent = '🔒 Upgrade for more checks';
   } else if (remaining === 1) {
     resetEl.textContent = 'Last free check today — upgrade to Pro for unlimited';
