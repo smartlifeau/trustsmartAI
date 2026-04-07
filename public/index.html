@@ -1153,8 +1153,8 @@ async function signOut() {
 }
 
 // Initialise Clerk after DOM is ready
-if ( document.readyState === 'loading') {
-  addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
     if (window.Clerk) {
       initClerk();
     } else {
