@@ -4,5 +4,8 @@
   "description": "TrustSmart AI — Australia's genuineness checker",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
   }
 }
