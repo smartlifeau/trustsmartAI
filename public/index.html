@@ -1087,6 +1087,8 @@ function downloadResult() {
 
 // ─── CLERK AUTH INIT ───
 async function initClerk() {
+  await window.Clerk.load();
+
   const urlParams = new URLSearchParams(window.location.search);
   const justUpgraded = urlParams.get('upgraded') === 'true';
 
@@ -1096,33 +1098,22 @@ async function initClerk() {
       localStorage.removeItem('ts_usage');
     } catch {}
     window.history.replaceState({}, '', '/');
-  }
 
-  await window.Clerk.load({
-    appearance: {}
-  });
-
-  // Wait for UI components to be ready
-  await new Promise(resolve => {
-    if (window.Clerk.isReady && window.Clerk.isReady()) {
-      resolve();
+    // Only redirect to sign-in if not already signed in
+    const user = window.Clerk.user;
+    if (user) {
+      showUserBar(user, true);
     } else {
-      window.Clerk.addListener(({ client }) => {
-        if (window.Clerk.isReady && window.Clerk.isReady()) resolve();
+      window.location.href = window.Clerk.buildSignInUrl({
+        redirectUrl: window.location.origin
       });
-      // Fallback timeout
-      setTimeout(resolve, 2000);
     }
-  });
-
-  const user = window.Clerk.user;
-
-  if (user) {
-    showUserBar(user, justUpgraded);
   } else {
-    window.location.href = window.Clerk.buildSignInUrl({
-      redirectUrl: window.location.origin
-    });
+    // Normal page load — just show user bar if already signed in, no forced redirect
+    const user = window.Clerk.user;
+    if (user) {
+      showUserBar(user, false);
+    }
   }
 
   updateUsageUI();
@@ -1153,29 +1144,18 @@ async function signOut() {
     barEl.classList.remove('visible');
     barEl.style.background = '';
     barEl.style.borderBottom = '';
-    window.location.href = window.Clerk.buildSignInUrl({
-      redirectUrl: window.location.origin
-    });
   } catch (e) {
     console.warn('Sign out failed:', e);
   }
 }
 
-// Initialise Clerk after DOM is ready
+// Initialise Clerk
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    if (window.Clerk) {
-      initClerk();
-    } else {
-      console.warn('Clerk not found');
-    }
+    if (window.Clerk) initClerk();
   });
 } else {
-    if (window.Clerk) {
-      initClerk();
-    } else {
-      console.warn('Clerk not found');
-    }
+  if (window.Clerk) initClerk();
 }
 
 </script>
