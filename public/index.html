@@ -1105,10 +1105,14 @@ async function initClerk() {
   if (user) {
     showUserBar(user, justUpgraded);
   } else {
-    window.Clerk.openSignIn({
-      afterSignInUrl: window.location.href,
-      afterSignUpUrl: window.location.href
-    });
+    try {
+      window.Clerk.openSignIn({
+        afterSignInUrl: window.location.origin,
+        afterSignUpUrl: window.location.origin
+      });
+    } catch (e) {
+      console.warn('Clerk sign-in modal failed to open:', e);
+    }
   }
 
   updateUsageUI();
@@ -1116,39 +1120,46 @@ async function initClerk() {
 
 function showUserBar(user, justUpgraded) {
   const name = user.firstName || user.emailAddresses?.[0]?.emailAddress || 'User';
+  const barEl = document.getElementById('userBar');
   const barName = document.getElementById('userBarName');
+
   if (justUpgraded) {
     barName.innerHTML = '🎉 Welcome to Pro, ' + name + '!';
-    document.getElementById('userBar').style.background = 'var(--genuine-bg)';
-    document.getElementById('userBar').style.borderBottom = '1px solid var(--genuine)';
+    barEl.style.background = 'var(--genuine-bg)';
+    barEl.style.borderBottom = '1px solid var(--genuine)';
   } else {
     barName.textContent = '👋 Hi, ' + name;
+    barEl.style.background = '';
+    barEl.style.borderBottom = '';
   }
-  document.getElementById('userBar').classList.add('visible');
+
+  barEl.classList.add('visible');
 }
 
 async function signOut() {
-  await window.Clerk.signOut();
-  document.getElementById('userBar').classList.remove('visible');
-  window.Clerk.openSignIn({
-    afterSignInUrl: window.location.href,
-    afterSignUpUrl: window.location.href
-  });
+  try {
+    await window.Clerk.signOut();
+    const barEl = document.getElementById('userBar');
+    barEl.classList.remove('visible');
+    barEl.style.background = '';
+    barEl.style.borderBottom = '';
+    window.Clerk.openSignIn({
+      afterSignInUrl: window.location.origin,
+      afterSignUpUrl: window.location.origin
+    });
+  } catch (e) {
+    console.warn('Sign out failed:', e);
+  }
 }
 
-// Wait for Clerk script to be ready
-if (window.Clerk) {
-  initClerk();
-} else {
-  window.addEventListener('load', () => {
-    const interval = setInterval(() => {
-      if (window.Clerk) {
-        clearInterval(interval);
-        initClerk();
-      }
-    }, 100);
-  });
-}
+// Initialise Clerk after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.Clerk) {
+    initClerk();
+  } else {
+    console.warn('Clerk script not found — check the <head> script tag');
+  }
+});
 
 </script>
 
