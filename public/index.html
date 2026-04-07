@@ -1120,14 +1120,9 @@ async function initClerk() {
   if (user) {
     showUserBar(user, justUpgraded);
   } else {
-    try {
-      window.Clerk.openSignIn({
-        afterSignInUrl: window.location.origin,
-        afterSignUpUrl: window.location.origin
-      });
-    } catch (e) {
-      console.warn('Clerk sign-in modal failed to open:', e);
-    }
+    window.location.href = window.Clerk.buildSignInUrl({
+      redirectUrl: window.location.origin
+    });
   }
 
   updateUsageUI();
@@ -1158,9 +1153,8 @@ async function signOut() {
     barEl.classList.remove('visible');
     barEl.style.background = '';
     barEl.style.borderBottom = '';
-    window.Clerk.openSignIn({
-      afterSignInUrl: window.location.origin,
-      afterSignUpUrl: window.location.origin
+    window.location.href = window.Clerk.buildSignInUrl({
+      redirectUrl: window.location.origin
     });
   } catch (e) {
     console.warn('Sign out failed:', e);
