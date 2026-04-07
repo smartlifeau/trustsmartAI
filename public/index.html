@@ -1098,7 +1098,22 @@ async function initClerk() {
     window.history.replaceState({}, '', '/');
   }
 
-  await window.Clerk.load();
+  await window.Clerk.load({
+    appearance: {}
+  });
+
+  // Wait for UI components to be ready
+  await new Promise(resolve => {
+    if (window.Clerk.isReady && window.Clerk.isReady()) {
+      resolve();
+    } else {
+      window.Clerk.addListener(({ client }) => {
+        if (window.Clerk.isReady && window.Clerk.isReady()) resolve();
+      });
+      // Fallback timeout
+      setTimeout(resolve, 2000);
+    }
+  });
 
   const user = window.Clerk.user;
 
