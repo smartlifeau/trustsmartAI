@@ -410,24 +410,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <!-- ═══ SCREEN 1: INPUT ═══ -->
 <div class="screen active" id="screen-input">
-<div class="usage-bar-wrap" id="usageBarWrap">
-  <div class="usage-bar-top">
-    <span class="usage-label" id="usageLabel">Guest checks today</span>
-    <span class="usage-count" id="usageCount">3 of 3 remaining</span>
+  <div class="user-bar" id="userBar">
+    <span>👤</span>
+    <span class="user-bar-name" id="userBarName"></span>
+    <button class="user-bar-signout" onclick="signOut()">Sign out</button>
   </div>
-  <div class="usage-track">
-    <div class="usage-fill" id="usageFill" style="width:100%"></div>
-  </div>
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-top:5px;">
-    <div class="usage-reset" id="usageReset">Sign up free for 5 checks/day</div>
-    <button id="signInBtn" onclick="showSignIn()"
-      style="display:none; font-size:11px; color:var(--accent); background:none;
-             border:1px solid var(--accent); border-radius:20px; padding:3px 10px;
-             cursor:pointer; font-family:var(--font-body); white-space:nowrap;">
-      Sign in
-    </button>
-  </div>
-</div>
   <header class="app-header">
     <div class="logo">
       <div class="logo-mark">
@@ -783,10 +770,6 @@ function updateUsageUI() {
       ? 'Resets at midnight AEST'
       : 'Sign up free for 5 checks/day';
   }
-
-  const signInBtn = document.getElementById('signInBtn');
-    if (signInBtn) signInBtn.style.display = signedIn ? 'none' : 'block';
-
 }
 
 function showPaywall() {
@@ -1264,12 +1247,6 @@ if (document.readyState === 'loading') {
   });
 } else {
   if (window.Clerk) initClerk();
-}
-
-function showSignIn() {
-  window.Clerk.openSignIn({
-    redirectUrl: window.location.origin
-  });
 }
 
 </script>
