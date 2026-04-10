@@ -120,7 +120,7 @@ footer {
   <div class="meta-row">
     <span class="meta-pill">Effective: April 2026</span>
     <span class="meta-pill">Last updated: April 2026</span>
-    <span class="meta-pill">SmartLife AU · ABN registered</span>
+    <span class="meta-pill">SmartLife AU · ABN 26 103 403 893</span>
   </div>
 
   <div class="toc">
@@ -128,18 +128,21 @@ footer {
     <ol>
       <li><a href="#s1">Who we are</a></li>
       <li><a href="#s2">What information we collect</a></li>
-      <li><a href="#s3">How your submitted content is handled</a></li>
-      <li><a href="#s4">Image and screenshot handling</a></li>
-      <li><a href="#s5">Third-party services — Anthropic API</a></li>
-      <li><a href="#s6">How we use your information</a></li>
-      <li><a href="#s7">How we store and protect your data</a></li>
-      <li><a href="#s8">Cookies and analytics</a></li>
-      <li><a href="#s9">Sharing your information</a></li>
-      <li><a href="#s10">Your rights under Australian Privacy Law</a></li>
-      <li><a href="#s11">AI disclaimer</a></li>
-      <li><a href="#s12">Children's privacy</a></li>
-      <li><a href="#s13">Changes to this policy</a></li>
-      <li><a href="#s14">Contact us</a></li>
+      <li><a href="#s3">Account information (Clerk)</a></li>
+      <li><a href="#s4">Payment information (Stripe)</a></li>
+      <li><a href="#s5">How your submitted content is handled</a></li>
+      <li><a href="#s6">Image and screenshot handling</a></li>
+      <li><a href="#s7">Third-party services</a></li>
+      <li><a href="#s8">How we use your information</a></li>
+      <li><a href="#s9">How we store and protect your data</a></li>
+      <li><a href="#s10">Cookies and analytics</a></li>
+      <li><a href="#s11">Cross-border data transfers</a></li>
+      <li><a href="#s12">Sharing your information</a></li>
+      <li><a href="#s13">Your rights under Australian Privacy Law</a></li>
+      <li><a href="#s14">AI disclaimer</a></li>
+      <li><a href="#s15">Children's privacy</a></li>
+      <li><a href="#s16">Changes to this policy</a></li>
+      <li><a href="#s17">Contact us</a></li>
     </ol>
   </div>
 
@@ -147,8 +150,8 @@ footer {
   <div class="section" id="s1">
     <div class="section-num">Section 01</div>
     <h2>Who we are</h2>
-    <p>TrustSmart AI is a product of <strong>SmartLife AU</strong>, an Australian sole trader business with a registered ABN and ASIC business name. We are based in Australia.</p>
-    <p>This Privacy Policy explains how SmartLife AU collects, uses, stores, and protects personal information in connection with your use of TrustSmart AI (available at trustsmartai.com.au or any subdomain thereof).</p>
+    <p>TrustSmart AI is a product of <strong>SmartLife AU</strong>, operated by <strong>SmartLife AU</strong>, an Australian sole trader business with ABN 26 103 403 893 and ASIC-registered business name. We are based in Australia and registered for GST.</p>
+    <p>This Privacy Policy explains how SmartLife AU collects, uses, stores, and protects personal information in connection with your use of TrustSmart AI (available at trustsmartai.com.au).</p>
     <p>We are bound by the <strong>Privacy Act 1988 (Cth)</strong> and the <strong>Australian Privacy Principles (APPs)</strong> contained in that Act.</p>
   </div>
 
@@ -161,11 +164,13 @@ footer {
     <p>We collect only the minimum information necessary to operate TrustSmart AI. Depending on how you use the service, this may include:</p>
     <ul>
       <li><strong>Submitted content</strong> — text, URLs, images, or screenshots you submit for genuineness checking</li>
-      <li><strong>Usage data</strong> — anonymised analytics such as pages visited, input mode used (text / screenshot / image / URL), and general usage patterns</li>
-      <li><strong>Technical data</strong> — browser type, device type, and approximate geographic region (country/state level only), collected automatically via analytics</li>
-      <li><strong>Contact information</strong> — only if you contact us directly via email (name and email address)</li>
+      <li><strong>Account information</strong> — name and email address if you create a free or Pro account via Clerk</li>
+      <li><strong>Payment information</strong> — billing details for Pro subscribers, processed by Stripe</li>
+      <li><strong>Usage data</strong> — anonymised analytics such as pages visited, input mode used, and general usage patterns</li>
+      <li><strong>Technical data</strong> — browser type, device type, and approximate geographic region, collected automatically via analytics</li>
+      <li><strong>Contact information</strong> — only if you contact us directly via email</li>
     </ul>
-    <p>We do <strong>not</strong> require you to create an account, and we do <strong>not</strong> collect your name, email address, or any identifying information simply for using the app.</p>
+    <p>Guest users (not signed in) may use up to 3 free checks per day without providing any personal information.</p>
   </div>
 
   <hr class="divider">
@@ -173,20 +178,20 @@ footer {
   <!-- 3 -->
   <div class="section" id="s3">
     <div class="section-num">Section 03</div>
-    <h2>How your submitted content is handled</h2>
-
+    <h2>Account information (Clerk)</h2>
     <div class="highlight-box">
-      <p><strong>Important:</strong> Content you submit (text, URLs, images, screenshots) is transmitted to Anthropic's API for AI analysis. It is not stored by SmartLife AU on any server or database after your check is complete.</p>
+      <p>TrustSmart AI uses <strong>Clerk</strong> for user authentication. Creating an account is optional for guest users but required to access more than 3 free checks per day or to subscribe to Pro.</p>
     </div>
-
-    <p>When you submit content for a genuineness check, the following occurs:</p>
+    <p>When you create an account or sign in, Clerk collects and stores:</p>
     <ul>
-      <li>Your content is sent from your browser to our secure serverless function hosted on Netlify</li>
-      <li>The serverless function forwards your content to the <strong>Anthropic Claude API</strong> for analysis</li>
-      <li>The analysis result is returned to your browser and displayed on screen</li>
-      <li>No copy of your submitted content or the result is retained by SmartLife AU after this process completes</li>
+      <li>Your email address</li>
+      <li>Your first and last name (if provided)</li>
+      <li>Sign-in method (email or Google)</li>
+      <li>Session and authentication tokens</li>
+      <li>Sign-in history and device information</li>
     </ul>
-    <p>Be mindful that content you submit — particularly in text or screenshot form — may contain personal information about yourself or others (for example, a WhatsApp message or social media post). You should only submit content you have the right to share, and avoid submitting sensitive personal information unnecessarily.</p>
+    <p>Clerk is a US-based authentication service. Your account data is stored on Clerk's servers in accordance with their privacy policy, available at <a href="https://clerk.com/legal/privacy" target="_blank" rel="noopener" style="color:var(--accent)">clerk.com/legal/privacy</a>. Clerk is compliant with SOC 2 Type II standards.</p>
+    <p>SmartLife AU receives your name and email address from Clerk when you are signed in, solely for the purpose of displaying your name in the app and associating your account with your Pro subscription.</p>
   </div>
 
   <hr class="divider">
@@ -194,20 +199,20 @@ footer {
   <!-- 4 -->
   <div class="section" id="s4">
     <div class="section-num">Section 04</div>
-    <h2>Image and screenshot handling</h2>
-
+    <h2>Payment information (Stripe)</h2>
     <div class="highlight-box">
-      <p><strong>Images and screenshots are processed in memory only.</strong> They are not saved, logged, stored, or used for any purpose beyond the immediate analysis request you initiate.</p>
+      <p>TrustSmart AI uses <strong>Stripe</strong> to process Pro subscription payments. SmartLife AU does <strong>not</strong> collect, store, or have access to your credit card or banking details at any time.</p>
     </div>
-
-    <p>When you upload an image or screenshot:</p>
+    <p>When you subscribe to TrustSmart AI Pro, Stripe collects and stores:</p>
     <ul>
-      <li>The file is converted to a base64 encoded format in your browser</li>
-      <li>It is transmitted securely (HTTPS) to our serverless function and then to the Anthropic API</li>
-      <li>Once the analysis response is returned, the image data is discarded — it is not written to disk, stored in a database, or retained in any log</li>
-      <li>SmartLife AU cannot view or access images you have submitted</li>
+      <li>Your payment card details (stored securely by Stripe, not by us)</li>
+      <li>Your billing email address</li>
+      <li>Your billing name and address</li>
+      <li>Transaction history and subscription status</li>
     </ul>
-    <p>Screenshots may contain personal information about third parties (names, profile photos, private messages). You are responsible for ensuring you have appropriate authority to submit any content you upload. TrustSmart AI is not intended to be used to analyse content about identifiable individuals in a manner that could constitute surveillance, harassment, or a breach of their privacy.</p>
+    <p>Stripe is a US-based payment processor. Your payment data is handled in accordance with Stripe's privacy policy at <a href="https://stripe.com/au/privacy" target="_blank" rel="noopener" style="color:var(--accent)">stripe.com/au/privacy</a>. Stripe is PCI DSS Level 1 certified.</p>
+    <p>SmartLife AU receives confirmation of successful payment from Stripe via webhook, which is used solely to activate your Pro subscription. We also receive your billing email to issue GST tax invoices.</p>
+    <p>GST tax invoices are issued automatically by Stripe on behalf of SmartLife AU for each billing cycle. These are sent to your billing email address and are available in your Stripe customer portal.</p>
   </div>
 
   <hr class="divider">
@@ -215,15 +220,18 @@ footer {
   <!-- 5 -->
   <div class="section" id="s5">
     <div class="section-num">Section 05</div>
-    <h2>Third-party services — Anthropic API</h2>
-    <p>TrustSmart AI uses the <strong>Anthropic Claude API</strong> to perform AI-powered content analysis. When you submit content for a check, that content is sent to Anthropic's servers for processing.</p>
-    <p>Anthropic is a US-based AI safety company. By using TrustSmart AI, you acknowledge that your submitted content will be processed by Anthropic's systems. Anthropic's use of data submitted via API is governed by their own privacy policy and terms of service, available at <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener" style="color:var(--accent)">anthropic.com/legal/privacy</a>.</p>
-    <p>As of the date of this policy, Anthropic does not use API-submitted content to train their models by default. We recommend reviewing Anthropic's current policy for the most up-to-date information.</p>
-    <p>We also use the following third-party services:</p>
+    <h2>How your submitted content is handled</h2>
+    <div class="highlight-box">
+      <p><strong>Important:</strong> Content you submit (text, URLs, images, screenshots) is transmitted to Anthropic's API for AI analysis. It is not stored by SmartLife AU on any server or database after your check is complete.</p>
+    </div>
+    <p>When you submit content for a genuineness check:</p>
     <ul>
-      <li><strong>Netlify</strong> — hosting and serverless functions (netlify.com). Your requests pass through Netlify's infrastructure.</li>
-      <li><strong>Google Analytics (GA4)</strong> — anonymised usage analytics. IP addresses are anonymised. You can opt out via Google's opt-out tools.</li>
+      <li>Your content is sent from your browser to our secure serverless function hosted on Netlify</li>
+      <li>The serverless function forwards your content to the <strong>Anthropic Claude API</strong> for analysis</li>
+      <li>The analysis result is returned to your browser and displayed on screen</li>
+      <li>No copy of your submitted content or the result is retained by SmartLife AU after this process completes</li>
     </ul>
+    <p>Be mindful that content you submit may contain personal information about yourself or others. You should only submit content you have the right to share, and avoid submitting sensitive personal information unnecessarily.</p>
   </div>
 
   <hr class="divider">
@@ -231,16 +239,18 @@ footer {
   <!-- 6 -->
   <div class="section" id="s6">
     <div class="section-num">Section 06</div>
-    <h2>How we use your information</h2>
-    <p>We use the information we collect only for the following purposes:</p>
+    <h2>Image and screenshot handling</h2>
+    <div class="highlight-box">
+      <p><strong>Images and screenshots are processed in memory only.</strong> They are not saved, logged, stored, or used for any purpose beyond the immediate analysis request you initiate.</p>
+    </div>
+    <p>When you upload an image or screenshot:</p>
     <ul>
-      <li>To provide the genuineness checking service you have requested</li>
-      <li>To monitor and improve the performance and reliability of TrustSmart AI</li>
-      <li>To understand aggregate usage patterns and improve the product</li>
-      <li>To respond to enquiries you send us directly</li>
-      <li>To comply with our legal obligations under Australian law</li>
+      <li>The file is converted to base64 format in your browser</li>
+      <li>It is transmitted securely (HTTPS) to our serverless function and then to the Anthropic API</li>
+      <li>Once the analysis response is returned, the image data is discarded</li>
+      <li>SmartLife AU cannot view or access images you have submitted</li>
     </ul>
-    <p>We do <strong>not</strong> use your submitted content to train AI models. We do <strong>not</strong> sell, rent, or share your personal information with any third party for marketing purposes.</p>
+    <p>Screenshots may contain personal information about third parties. You are responsible for ensuring you have appropriate authority to submit any content you upload.</p>
   </div>
 
   <hr class="divider">
@@ -248,11 +258,15 @@ footer {
   <!-- 7 -->
   <div class="section" id="s7">
     <div class="section-num">Section 07</div>
-    <h2>How we store and protect your data</h2>
-    <p>Submitted content (text, URLs, images, screenshots) is <strong>not stored</strong> by SmartLife AU. It is processed transiently and discarded after each check.</p>
-    <p>Anonymised analytics data collected via Google Analytics is stored on Google's servers in accordance with Google's data processing terms.</p>
-    <p>Any emails you send to us are stored in our business email system and retained only as long as necessary to resolve your enquiry.</p>
-    <p>Our infrastructure uses HTTPS encryption for all data in transit. Our serverless functions run in Netlify's secure environment and your Anthropic API key is never exposed to the browser.</p>
+    <h2>Third-party services</h2>
+    <p>TrustSmart AI uses the following third-party services. Each has their own privacy policy and data handling practices:</p>
+    <ul>
+      <li><strong>Anthropic Claude API</strong> — AI content analysis. Your submitted content is processed by Anthropic's systems. See <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener" style="color:var(--accent)">anthropic.com/legal/privacy</a>. Anthropic does not use API-submitted content to train their models by default.</li>
+      <li><strong>Clerk</strong> — User authentication and account management. See <a href="https://clerk.com/legal/privacy" target="_blank" rel="noopener" style="color:var(--accent)">clerk.com/legal/privacy</a>.</li>
+      <li><strong>Stripe</strong> — Payment processing and subscription management. See <a href="https://stripe.com/au/privacy" target="_blank" rel="noopener" style="color:var(--accent)">stripe.com/au/privacy</a>.</li>
+      <li><strong>Netlify</strong> — Hosting and serverless functions. Your requests pass through Netlify's infrastructure. See <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener" style="color:var(--accent)">netlify.com/privacy</a>.</li>
+      <li><strong>Google Analytics (GA4)</strong> — Anonymised usage analytics. IP addresses are anonymised. You can opt out via Google's opt-out tools.</li>
+    </ul>
   </div>
 
   <hr class="divider">
@@ -260,10 +274,20 @@ footer {
   <!-- 8 -->
   <div class="section" id="s8">
     <div class="section-num">Section 08</div>
-    <h2>Cookies and analytics</h2>
-    <p>TrustSmart AI uses <strong>Google Analytics 4 (GA4)</strong> to collect anonymised usage data. GA4 may set cookies in your browser to distinguish unique sessions.</p>
-    <p>We do not use advertising cookies, tracking pixels, or any third-party marketing trackers. The only cookies present on TrustSmart AI are those set by Google Analytics for anonymised session tracking.</p>
-    <p>You can disable Google Analytics tracking by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" style="color:var(--accent)">Google Analytics Opt-out Browser Add-on</a>, or by using a browser with tracking protection enabled.</p>
+    <h2>How we use your information</h2>
+    <p>We use the information we collect only for the following purposes:</p>
+    <ul>
+      <li>To provide the genuineness checking service you have requested</li>
+      <li>To manage your account and authenticate your identity via Clerk</li>
+      <li>To process your Pro subscription payment via Stripe</li>
+      <li>To issue GST tax invoices for Pro subscriptions</li>
+      <li>To display your name in the app when you are signed in</li>
+      <li>To monitor and improve the performance and reliability of TrustSmart AI</li>
+      <li>To understand aggregate usage patterns and improve the product</li>
+      <li>To respond to enquiries you send us directly</li>
+      <li>To comply with our legal obligations under Australian law, including GST obligations</li>
+    </ul>
+    <p>We do <strong>not</strong> use your submitted content to train AI models. We do <strong>not</strong> sell, rent, or share your personal information with any third party for marketing purposes.</p>
   </div>
 
   <hr class="divider">
@@ -271,15 +295,11 @@ footer {
   <!-- 9 -->
   <div class="section" id="s9">
     <div class="section-num">Section 09</div>
-    <h2>Sharing your information</h2>
-    <p>We do not sell your personal information. We share information only in the following limited circumstances:</p>
-    <ul>
-      <li><strong>Anthropic</strong> — submitted content is sent to Anthropic's API as described in Section 5</li>
-      <li><strong>Netlify</strong> — requests are processed through Netlify's hosting infrastructure</li>
-      <li><strong>Google Analytics</strong> — anonymised usage data only</li>
-      <li><strong>Legal obligations</strong> — if required by Australian law, court order, or government authority</li>
-    </ul>
-    <p>No other sharing occurs. We do not share your data with advertisers, data brokers, or any other commercial third parties.</p>
+    <h2>How we store and protect your data</h2>
+    <p>Submitted content (text, URLs, images, screenshots) is <strong>not stored</strong> by SmartLife AU. It is processed transiently and discarded after each check.</p>
+    <p>Account data is stored by Clerk on their secure infrastructure. Payment data is stored by Stripe on their PCI DSS certified infrastructure. SmartLife AU does not maintain a separate database of user personal information.</p>
+    <p>Our infrastructure uses HTTPS encryption for all data in transit. Our serverless functions run in Netlify's secure environment and your Anthropic API key is never exposed to the browser.</p>
+    <p>Any emails you send to us are stored in our business email system and retained only as long as necessary to resolve your enquiry.</p>
   </div>
 
   <hr class="divider">
@@ -287,16 +307,11 @@ footer {
   <!-- 10 -->
   <div class="section" id="s10">
     <div class="section-num">Section 10</div>
-    <h2>Your rights under Australian Privacy Law</h2>
-    <p>Under the Privacy Act 1988 (Cth) and the Australian Privacy Principles, you have the right to:</p>
-    <ul>
-      <li>Request access to personal information we hold about you</li>
-      <li>Request correction of personal information that is inaccurate, out of date, or incomplete</li>
-      <li>Make a complaint if you believe we have mishandled your personal information</li>
-    </ul>
-    <p>Because TrustSmart AI does not store submitted content or require account creation, in most cases we will hold no personal information about you beyond any direct email correspondence.</p>
-    <p>To exercise any of these rights, contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a>. We will respond within 30 days.</p>
-    <p>If you are not satisfied with our response, you may lodge a complaint with the <strong>Office of the Australian Information Commissioner (OAIC)</strong> at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener" style="color:var(--accent)">oaic.gov.au</a>.</p>
+    <h2>Cookies and analytics</h2>
+    <p>TrustSmart AI uses <strong>Google Analytics 4 (GA4)</strong> to collect anonymised usage data. GA4 may set cookies in your browser to distinguish unique sessions.</p>
+    <p><strong>Clerk</strong> also sets authentication cookies and tokens in your browser to maintain your signed-in session. These are essential for the app to function correctly when you are signed in.</p>
+    <p>We do not use advertising cookies, tracking pixels, or any third-party marketing trackers.</p>
+    <p>You can disable Google Analytics tracking by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" style="color:var(--accent)">Google Analytics Opt-out Browser Add-on</a>.</p>
   </div>
 
   <hr class="divider">
@@ -304,15 +319,17 @@ footer {
   <!-- 11 -->
   <div class="section" id="s11">
     <div class="section-num">Section 11</div>
-    <h2>AI disclaimer</h2>
-
-    <div class="warning-box">
-      <p><strong>Important:</strong> TrustSmart AI results are generated by an AI model and are provided for informational purposes only. They do not constitute professional fact-checking, legal advice, journalistic verification, or any other form of certified analysis.</p>
-    </div>
-
-    <p>Genuineness scores, verdicts, and source references produced by TrustSmart AI are AI-generated assessments based on the model's training data and reasoning capabilities. They may be incomplete, inaccurate, or out of date.</p>
-    <p>You should not rely solely on TrustSmart AI results when making important decisions. Always verify critical information through authoritative sources such as official government websites, established news organisations, or professional advisers.</p>
-    <p>SmartLife AU accepts no liability for decisions made in reliance on TrustSmart AI analysis results.</p>
+    <h2>Cross-border data transfers</h2>
+    <p>Some of our third-party service providers are based in the United States. By using TrustSmart AI, you acknowledge that your information may be transferred to and processed in the United States or other countries outside Australia.</p>
+    <p>These transfers occur with the following providers:</p>
+    <ul>
+      <li><strong>Anthropic</strong> — submitted content is processed on US-based servers</li>
+      <li><strong>Clerk</strong> — account data is stored on US-based servers</li>
+      <li><strong>Stripe</strong> — payment data is processed on US and international servers</li>
+      <li><strong>Netlify</strong> — hosting infrastructure is based in the US</li>
+      <li><strong>Google Analytics</strong> — analytics data is processed by Google globally</li>
+    </ul>
+    <p>We take reasonable steps to ensure these providers maintain appropriate data protection standards. Where applicable, these providers are bound by standard contractual clauses or equivalent protections.</p>
   </div>
 
   <hr class="divider">
@@ -320,8 +337,17 @@ footer {
   <!-- 12 -->
   <div class="section" id="s12">
     <div class="section-num">Section 12</div>
-    <h2>Children's privacy</h2>
-    <p>TrustSmart AI is not directed at children under the age of 15. We do not knowingly collect personal information from children. If you believe a child has submitted personal information through TrustSmart AI, please contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a> and we will take appropriate steps.</p>
+    <h2>Sharing your information</h2>
+    <p>We do not sell your personal information. We share information only in the following limited circumstances:</p>
+    <ul>
+      <li><strong>Anthropic</strong> — submitted content is sent to Anthropic's API for analysis</li>
+      <li><strong>Clerk</strong> — account and authentication data</li>
+      <li><strong>Stripe</strong> — payment and subscription data</li>
+      <li><strong>Netlify</strong> — requests are processed through Netlify's infrastructure</li>
+      <li><strong>Google Analytics</strong> — anonymised usage data only</li>
+      <li><strong>Legal obligations</strong> — if required by Australian law, court order, or government authority, including the ATO for GST compliance</li>
+    </ul>
+    <p>No other sharing occurs. We do not share your data with advertisers, data brokers, or any other commercial third parties.</p>
   </div>
 
   <hr class="divider">
@@ -329,9 +355,17 @@ footer {
   <!-- 13 -->
   <div class="section" id="s13">
     <div class="section-num">Section 13</div>
-    <h2>Changes to this policy</h2>
-    <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. Continued use of TrustSmart AI after any changes constitutes your acceptance of the updated policy.</p>
-    <p>For significant changes, we will make reasonable efforts to notify users where possible.</p>
+    <h2>Your rights under Australian Privacy Law</h2>
+    <p>Under the Privacy Act 1988 (Cth) and the Australian Privacy Principles, you have the right to:</p>
+    <ul>
+      <li>Request access to personal information we hold about you</li>
+      <li>Request correction of personal information that is inaccurate, out of date, or incomplete</li>
+      <li>Request deletion of your account and associated data</li>
+      <li>Make a complaint if you believe we have mishandled your personal information</li>
+    </ul>
+    <p>To request account deletion, you may delete your account directly through the Clerk account portal, or contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a> and we will action your request within 30 days.</p>
+    <p>To cancel your Pro subscription and request deletion of payment records, contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a>. Note that we are required to retain GST tax invoice records for a minimum of 5 years under Australian tax law.</p>
+    <p>If you are not satisfied with our response, you may lodge a complaint with the <strong>Office of the Australian Information Commissioner (OAIC)</strong> at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener" style="color:var(--accent)">oaic.gov.au</a>.</p>
   </div>
 
   <hr class="divider">
@@ -339,11 +373,44 @@ footer {
   <!-- 14 -->
   <div class="section" id="s14">
     <div class="section-num">Section 14</div>
+    <h2>AI disclaimer</h2>
+    <div class="warning-box">
+      <p><strong>Important:</strong> TrustSmart AI results are generated by an AI model and are provided for informational purposes only. They do not constitute professional fact-checking, legal advice, journalistic verification, or any other form of certified analysis.</p>
+    </div>
+    <p>Genuineness scores, verdicts, and source references produced by TrustSmart AI are AI-generated assessments and may be incomplete, inaccurate, or out of date. Always verify critical information through authoritative sources.</p>
+    <p>SmartLife AU accepts no liability for decisions made in reliance on TrustSmart AI analysis results.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 15 -->
+  <div class="section" id="s15">
+    <div class="section-num">Section 15</div>
+    <h2>Children's privacy</h2>
+    <p>TrustSmart AI is not directed at children under the age of 15. We do not knowingly collect personal information from children. If you believe a child has submitted personal information through TrustSmart AI, please contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a> and we will take appropriate steps.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 16 -->
+  <div class="section" id="s16">
+    <div class="section-num">Section 16</div>
+    <h2>Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. Continued use of TrustSmart AI after any changes constitutes your acceptance of the updated policy.</p>
+    <p>For significant changes, we will make reasonable efforts to notify users where possible.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 17 -->
+  <div class="section" id="s17">
+    <div class="section-num">Section 17</div>
     <h2>Contact us</h2>
     <p>If you have any questions, concerns, or requests relating to this Privacy Policy or the handling of your personal information, please contact us:</p>
     <ul>
       <li><strong>Email:</strong> <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a></li>
-      <li><strong>Business:</strong> SmartLife AU (sole trader, ABN registered)</li>
+      <li><strong>Business:</strong> SmartLife AU</li>
+      <li><strong>ABN:</strong> 26 103 403 893</li>
       <li><strong>Location:</strong> Australia</li>
     </ul>
     <p>We aim to respond to all privacy-related enquiries within 30 days.</p>

@@ -103,7 +103,7 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <div class="meta-row">
     <span class="meta-pill">Effective: April 2026</span>
     <span class="meta-pill">Last updated: April 2026</span>
-    <span class="meta-pill">SmartLife AU · ABN registered</span>
+    <span class="meta-pill">SmartLife AU · ABN 26 103 403 893</span>
   </div>
 
   <div class="highlight-box">
@@ -115,19 +115,22 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
     <ol>
       <li><a href="#s1">About TrustSmart AI</a></li>
       <li><a href="#s2">Acceptance of terms</a></li>
-      <li><a href="#s3">Description of service</a></li>
-      <li><a href="#s4">Acceptable use</a></li>
-      <li><a href="#s5">Prohibited use</a></li>
-      <li><a href="#s6">AI-generated content disclaimer</a></li>
-      <li><a href="#s7">Intellectual property</a></li>
-      <li><a href="#s8">Content you submit</a></li>
-      <li><a href="#s9">Third-party services</a></li>
-      <li><a href="#s10">Limitation of liability</a></li>
-      <li><a href="#s11">Australian Consumer Law</a></li>
-      <li><a href="#s12">Service availability</a></li>
-      <li><a href="#s13">Changes to the service or terms</a></li>
-      <li><a href="#s14">Governing law</a></li>
-      <li><a href="#s15">Contact us</a></li>
+      <li><a href="#s3">Description of service and plans</a></li>
+      <li><a href="#s4">Accounts and authentication</a></li>
+      <li><a href="#s5">Subscriptions, billing and GST</a></li>
+      <li><a href="#s6">Cancellation and refunds</a></li>
+      <li><a href="#s7">Acceptable use</a></li>
+      <li><a href="#s8">Prohibited use</a></li>
+      <li><a href="#s9">AI-generated content disclaimer</a></li>
+      <li><a href="#s10">Intellectual property</a></li>
+      <li><a href="#s11">Content you submit</a></li>
+      <li><a href="#s12">Third-party services</a></li>
+      <li><a href="#s13">Limitation of liability</a></li>
+      <li><a href="#s14">Australian Consumer Law</a></li>
+      <li><a href="#s15">Service availability</a></li>
+      <li><a href="#s16">Changes to the service or terms</a></li>
+      <li><a href="#s17">Governing law</a></li>
+      <li><a href="#s18">Contact us</a></li>
     </ol>
   </div>
 
@@ -135,7 +138,7 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <div class="section" id="s1">
     <div class="section-num">Section 01</div>
     <h2>About TrustSmart AI</h2>
-    <p>TrustSmart AI is a product of <strong>SmartLife AU</strong>, an Australian sole trader business with a registered ABN and ASIC-registered business name, based in Australia.</p>
+    <p>TrustSmart AI is a product of <strong>SmartLife AU</strong>, an Australian sole trader business with ABN 26 103 403 893 and ASIC-registered business name, based in Australia. SmartLife AU is registered for GST.</p>
     <p>TrustSmart AI is an AI-powered content genuineness checker designed for Australian consumers. It allows users to submit text, URLs, images, and screenshots for analysis against Australian sources.</p>
   </div>
 
@@ -147,7 +150,7 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
     <h2>Acceptance of terms</h2>
     <p>By accessing or using TrustSmart AI (available at trustsmartai.com.au or any associated subdomain), you agree to be bound by these Terms of Service and our <a href="/privacy.html" style="color:var(--accent)">Privacy Policy</a>.</p>
     <p>If you do not agree to these terms, you must not use TrustSmart AI.</p>
-    <p>These terms apply to all users of TrustSmart AI, whether accessing via desktop, mobile browser, or any other device.</p>
+    <p>These terms apply to all users of TrustSmart AI, whether using as a guest, free account holder, or Pro subscriber.</p>
   </div>
 
   <hr class="divider">
@@ -155,16 +158,15 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <!-- 3 -->
   <div class="section" id="s3">
     <div class="section-num">Section 03</div>
-    <h2>Description of service</h2>
-    <p>TrustSmart AI provides AI-powered content analysis that:</p>
+    <h2>Description of service and plans</h2>
+    <p>TrustSmart AI provides AI-powered content analysis that generates a genuineness score, identifies claims, references Australian sources, and provides a plain-English summary.</p>
+    <p>The service is available on the following plans:</p>
     <ul>
-      <li>Accepts text, URLs, images, and screenshots as input</li>
-      <li>Generates a genuineness score (0–100) based on AI analysis</li>
-      <li>Identifies claims within submitted content and assesses their accuracy</li>
-      <li>References relevant Australian sources where applicable</li>
-      <li>Provides a plain-English summary of findings</li>
+      <li><strong>Guest (no account):</strong> 3 free checks per day. Resets at midnight AEST.</li>
+      <li><strong>Free account:</strong> 5 free checks per day after signing up. Resets at midnight AEST. No payment required.</li>
+      <li><strong>Pro ($7.99 AUD/month):</strong> Unlimited checks per day, priority analysis, and full access to all features. Requires a paid subscription via Stripe.</li>
     </ul>
-    <p>The service is currently provided free of charge. We reserve the right to introduce paid tiers or usage limits in the future, with reasonable notice to users.</p>
+    <p>We reserve the right to change plan limits or pricing with reasonable notice to users.</p>
   </div>
 
   <hr class="divider">
@@ -172,6 +174,65 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <!-- 4 -->
   <div class="section" id="s4">
     <div class="section-num">Section 04</div>
+    <h2>Accounts and authentication</h2>
+    <p>User accounts are managed via <strong>Clerk</strong>, our third-party authentication provider. You may create an account using your email address or a Google account.</p>
+    <p>You are responsible for:</p>
+    <ul>
+      <li>Maintaining the confidentiality of your account credentials</li>
+      <li>All activity that occurs under your account</li>
+      <li>Notifying us immediately of any unauthorised use of your account</li>
+    </ul>
+    <p>You must not share your account with others or create accounts on behalf of third parties without their consent.</p>
+    <p>We reserve the right to suspend or terminate accounts that violate these Terms of Service.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 5 -->
+  <div class="section" id="s5">
+    <div class="section-num">Section 05</div>
+    <h2>Subscriptions, billing and GST</h2>
+    <div class="highlight-box">
+      <p>TrustSmart AI Pro is <strong>$7.99 AUD per month, GST inclusive</strong>. Payments are processed securely by Stripe. SmartLife AU does not store your payment card details.</p>
+    </div>
+    <p>By subscribing to TrustSmart AI Pro, you agree to the following billing terms:</p>
+    <ul>
+      <li>Your subscription begins immediately upon successful payment</li>
+      <li>You will be billed <strong>$7.99 AUD (GST inclusive)</strong> on the same date each month</li>
+      <li>Billing is automatic and recurring until you cancel</li>
+      <li>Payment is processed by <strong>Stripe</strong> in accordance with their terms of service</li>
+      <li>If a payment fails, we will attempt to retry the charge. Access may be suspended if payment cannot be collected after reasonable attempts</li>
+    </ul>
+    <p><strong>GST:</strong> All prices are in Australian Dollars (AUD) and are inclusive of Goods and Services Tax (GST) at 10%. SmartLife AU (ABN 26 103 403 893) is registered for GST. The GST component of the $7.99 monthly fee is approximately $0.73.</p>
+    <p><strong>Tax invoices:</strong> A GST tax invoice is automatically issued by Stripe on behalf of SmartLife AU for each billing cycle and sent to your billing email address. Tax invoices are also accessible via your Stripe customer portal.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 6 -->
+  <div class="section" id="s6">
+    <div class="section-num">Section 06</div>
+    <h2>Cancellation and refunds</h2>
+    <p><strong>Cancellation:</strong> You may cancel your Pro subscription at any time. Upon cancellation:</p>
+    <ul>
+      <li>Your Pro access continues until the end of your current billing period</li>
+      <li>You will not be charged for the next billing cycle</li>
+      <li>Your account reverts to the free plan (5 checks/day) after the billing period ends</li>
+      <li>No partial month refunds are issued for the remaining days in your current billing period</li>
+    </ul>
+    <p>To cancel, contact us at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a> or manage your subscription via the Stripe customer portal.</p>
+    <p><strong>Refunds:</strong> We generally do not offer refunds for subscription fees already charged, except where required by Australian Consumer Law. If you believe you are entitled to a refund under Australian Consumer Law, please contact us and we will assess your request.</p>
+    <p><strong>Accidental charges:</strong> If you believe you were charged in error, contact us within 7 days at <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a> and we will review your case promptly.</p>
+    <div class="highlight-box">
+      <p>Your rights under the Australian Consumer Law are not limited by this refund policy. See Section 14 for more information.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 7 -->
+  <div class="section" id="s7">
+    <div class="section-num">Section 07</div>
     <h2>Acceptable use</h2>
     <p>You may use TrustSmart AI for lawful personal or professional purposes, including:</p>
     <ul>
@@ -185,52 +246,44 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
 
   <hr class="divider">
 
-  <!-- 5 -->
-  <div class="section" id="s5">
-    <div class="section-num">Section 05</div>
+  <!-- 8 -->
+  <div class="section" id="s8">
+    <div class="section-num">Section 08</div>
     <h2>Prohibited use</h2>
     <p>You must not use TrustSmart AI to:</p>
     <ul>
       <li>Submit content that contains child sexual abuse material or any illegal content</li>
       <li>Harass, stalk, or surveil any individual by submitting content about them without lawful basis</li>
       <li>Attempt to reverse-engineer, scrape, or systematically extract data from the service</li>
-      <li>Circumvent or attempt to circumvent any rate limits, security measures, or access controls</li>
+      <li>Circumvent or attempt to circumvent any rate limits, usage counters, security measures, or access controls</li>
       <li>Submit content that violates Australian law or the laws of your jurisdiction</li>
       <li>Use the service to generate or validate misinformation for malicious purposes</li>
-      <li>Impersonate any person, organisation, or entity in submitted content</li>
-      <li>Submit content containing personal information about individuals without their consent where this could constitute a privacy breach</li>
       <li>Use automated scripts, bots, or other tools to make bulk requests to the service</li>
+      <li>Share, sell, or transfer your account or Pro subscription to another person</li>
+      <li>Submit content containing personal information about individuals without their consent where this could constitute a privacy breach</li>
     </ul>
-    <p>We reserve the right to suspend or terminate access to any user who violates these prohibitions.</p>
+    <p>We reserve the right to suspend or terminate access to any user who violates these prohibitions without refund.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- 6 -->
-  <div class="section" id="s6">
-    <div class="section-num">Section 06</div>
+  <!-- 9 -->
+  <div class="section" id="s9">
+    <div class="section-num">Section 09</div>
     <h2>AI-generated content disclaimer</h2>
-
     <div class="warning-box">
       <p><strong>Important:</strong> TrustSmart AI results are generated by an AI model. They are provided for informational purposes only and must not be relied upon as professional fact-checking, legal advice, journalistic verification, or any certified form of analysis.</p>
     </div>
-
-    <p>AI-generated genuineness scores, verdicts, claim assessments, and source references may be:</p>
-    <ul>
-      <li>Incomplete or based on outdated information</li>
-      <li>Incorrect or misleading in specific cases</li>
-      <li>Unable to access real-time information or verify very recent events</li>
-      <li>Biased by the training data of the underlying AI model</li>
-    </ul>
-    <p>You should always independently verify important information through authoritative sources such as official government websites (.gov.au), established news organisations, or qualified professionals before making decisions based on TrustSmart AI results.</p>
+    <p>AI-generated genuineness scores, verdicts, claim assessments, and source references may be incomplete, incorrect, based on outdated information, or unable to verify very recent events.</p>
+    <p>Always independently verify important information through authoritative sources such as official government websites (.gov.au), established news organisations, or qualified professionals.</p>
     <p><strong>SmartLife AU accepts no responsibility or liability for any loss, damage, or harm arising from reliance on TrustSmart AI analysis results.</strong></p>
   </div>
 
   <hr class="divider">
 
-  <!-- 7 -->
-  <div class="section" id="s7">
-    <div class="section-num">Section 07</div>
+  <!-- 10 -->
+  <div class="section" id="s10">
+    <div class="section-num">Section 10</div>
     <h2>Intellectual property</h2>
     <p>All intellectual property in TrustSmart AI — including but not limited to the application design, interface, branding, code, and written content — is owned by SmartLife AU or its licensors.</p>
     <p>You may not copy, reproduce, modify, distribute, or create derivative works from any part of TrustSmart AI without our prior written consent.</p>
@@ -239,40 +292,37 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
 
   <hr class="divider">
 
-  <!-- 8 -->
-  <div class="section" id="s8">
-    <div class="section-num">Section 08</div>
+  <!-- 11 -->
+  <div class="section" id="s11">
+    <div class="section-num">Section 11</div>
     <h2>Content you submit</h2>
     <p>You retain ownership of any content you submit to TrustSmart AI. By submitting content, you grant SmartLife AU a limited, transient licence to process that content solely for the purpose of providing the analysis service.</p>
-    <p>As described in our Privacy Policy, submitted content is not stored by SmartLife AU after your check is complete.</p>
-    <p>You warrant that:</p>
-    <ul>
-      <li>You have the right to submit the content you provide</li>
-      <li>Your submission does not violate the intellectual property, privacy, or other rights of any third party</li>
-      <li>Your submission complies with these Terms of Service and all applicable Australian laws</li>
-    </ul>
+    <p>Submitted content is not stored by SmartLife AU after your check is complete, as described in our Privacy Policy.</p>
+    <p>You warrant that you have the right to submit the content you provide, that your submission does not violate the rights of any third party, and that your submission complies with these Terms of Service and all applicable Australian laws.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- 9 -->
-  <div class="section" id="s9">
-    <div class="section-num">Section 09</div>
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <div class="section-num">Section 12</div>
     <h2>Third-party services</h2>
-    <p>TrustSmart AI relies on the following third-party services to operate:</p>
+    <p>TrustSmart AI relies on the following third-party services:</p>
     <ul>
-      <li><strong>Anthropic Claude API</strong> — for AI-powered content analysis. Your submitted content is processed by Anthropic's systems subject to their terms of service.</li>
-      <li><strong>Netlify</strong> — for hosting and serverless infrastructure.</li>
-      <li><strong>Google Analytics</strong> — for anonymised usage analytics.</li>
+      <li><strong>Anthropic Claude API</strong> — AI-powered content analysis</li>
+      <li><strong>Clerk</strong> — user authentication and account management</li>
+      <li><strong>Stripe</strong> — payment processing and subscription management</li>
+      <li><strong>Netlify</strong> — hosting and serverless infrastructure</li>
+      <li><strong>Google Analytics</strong> — anonymised usage analytics</li>
     </ul>
-    <p>SmartLife AU is not responsible for the availability, accuracy, or conduct of these third-party services. Use of TrustSmart AI is also subject to Anthropic's usage policies.</p>
+    <p>SmartLife AU is not responsible for the availability, accuracy, or conduct of these third-party services. Use of TrustSmart AI is also subject to Anthropic's usage policies and Stripe's terms of service.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- 10 -->
-  <div class="section" id="s10">
-    <div class="section-num">Section 10</div>
+  <!-- 13 -->
+  <div class="section" id="s13">
+    <div class="section-num">Section 13</div>
     <h2>Limitation of liability</h2>
     <p>To the maximum extent permitted by law, SmartLife AU and its operator shall not be liable for:</p>
     <ul>
@@ -282,39 +332,7 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
       <li>Any interruption, suspension, or termination of the service</li>
       <li>Any unauthorised access to or alteration of your submitted content</li>
     </ul>
-    <p>Our total liability to you for any claim arising from your use of TrustSmart AI shall not exceed AUD $100.</p>
-  </div>
-
-  <hr class="divider">
-
-  <!-- 11 -->
-  <div class="section" id="s11">
-    <div class="section-num">Section 11</div>
-    <h2>Australian Consumer Law</h2>
-    <p>Nothing in these Terms of Service excludes, restricts, or modifies any consumer guarantee, right, or remedy conferred by the <strong>Australian Consumer Law (Schedule 2 of the Competition and Consumer Act 2010 (Cth))</strong> that cannot lawfully be excluded, restricted, or modified.</p>
-    <p>TrustSmart AI is currently provided free of charge. Where a service is provided free of charge, our liability for failure to comply with a consumer guarantee is limited to re-supplying the service or paying the cost of having the service supplied again, at our discretion.</p>
-  </div>
-
-  <hr class="divider">
-
-  <!-- 12 -->
-  <div class="section" id="s12">
-    <div class="section-num">Section 12</div>
-    <h2>Service availability</h2>
-    <p>TrustSmart AI is provided on an "as is" and "as available" basis. We do not guarantee uninterrupted or error-free access to the service.</p>
-    <p>We may suspend, modify, or discontinue the service (or any part of it) at any time with or without notice, including for maintenance, updates, or business reasons.</p>
-    <p>We are not liable for any loss or inconvenience caused by service unavailability.</p>
-  </div>
-
-  <hr class="divider">
-
-  <!-- 13 -->
-  <div class="section" id="s13">
-    <div class="section-num">Section 13</div>
-    <h2>Changes to the service or terms</h2>
-    <p>We may update these Terms of Service from time to time. When we do, we will update the "Last updated" date at the top of this page.</p>
-    <p>Continued use of TrustSmart AI after changes to these terms constitutes acceptance of the updated terms. If you do not agree with the updated terms, you must stop using the service.</p>
-    <p>We may also change, add, or remove features from TrustSmart AI at any time without notice.</p>
+    <p>Our total liability to you for any claim arising from your use of TrustSmart AI shall not exceed the amount you paid to us in the 3 months preceding the claim, or AUD $100, whichever is greater.</p>
   </div>
 
   <hr class="divider">
@@ -322,8 +340,10 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <!-- 14 -->
   <div class="section" id="s14">
     <div class="section-num">Section 14</div>
-    <h2>Governing law</h2>
-    <p>These Terms of Service are governed by the laws of Victoria, Australia. You submit to the exclusive jurisdiction of the courts of Victoria and the Federal Court of Australia for any dispute arising from these terms or your use of TrustSmart AI.</p>
+    <h2>Australian Consumer Law</h2>
+    <p>Nothing in these Terms of Service excludes, restricts, or modifies any consumer guarantee, right, or remedy conferred by the <strong>Australian Consumer Law (Schedule 2 of the Competition and Consumer Act 2010 (Cth))</strong> that cannot lawfully be excluded, restricted, or modified.</p>
+    <p>Under the Australian Consumer Law, you may be entitled to a remedy if the service fails to meet a consumer guarantee. For paid subscriptions, our liability for failure to comply with a consumer guarantee is limited to re-supplying the service or refunding the price paid for the affected period, at our discretion.</p>
+    <p>For free accounts and guest usage, where the service is provided at no charge, our liability is limited to re-supplying the service or paying the cost of having the service supplied again, at our discretion.</p>
   </div>
 
   <hr class="divider">
@@ -331,13 +351,45 @@ footer { border-top: 1px solid var(--border); background: var(--surface); paddin
   <!-- 15 -->
   <div class="section" id="s15">
     <div class="section-num">Section 15</div>
+    <h2>Service availability</h2>
+    <p>TrustSmart AI is provided on an "as is" and "as available" basis. We do not guarantee uninterrupted or error-free access to the service.</p>
+    <p>We may suspend, modify, or discontinue the service (or any part of it) at any time. In the event of a planned discontinuation affecting Pro subscribers, we will provide reasonable notice and a pro-rata refund for any unused subscription period.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 16 -->
+  <div class="section" id="s16">
+    <div class="section-num">Section 16</div>
+    <h2>Changes to the service or terms</h2>
+    <p>We may update these Terms of Service from time to time. When we do, we will update the "Last updated" date at the top of this page.</p>
+    <p>For material changes affecting Pro subscribers — including pricing changes — we will provide at least 30 days notice via email to your registered billing address before the changes take effect.</p>
+    <p>Continued use of TrustSmart AI after changes to these terms constitutes acceptance of the updated terms.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 17 -->
+  <div class="section" id="s17">
+    <div class="section-num">Section 17</div>
+    <h2>Governing law</h2>
+    <p>These Terms of Service are governed by the laws of Australia. You submit to the exclusive jurisdiction of the Federal Court of Australia for any dispute arising from these terms or your use of TrustSmart AI.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 18 -->
+  <div class="section" id="s18">
+    <div class="section-num">Section 18</div>
     <h2>Contact us</h2>
-    <p>For any questions or concerns about these Terms of Service:</p>
+    <p>For any questions or concerns about these Terms of Service, billing, or your subscription:</p>
     <ul>
       <li><strong>Email:</strong> <a href="mailto:hello@smartlifeau.com.au" style="color:var(--accent)">hello@smartlifeau.com.au</a></li>
-      <li><strong>Business:</strong> SmartLife AU (sole trader, ABN registered)</li>
+      <li><strong>Business:</strong> SmartLife AU</li>
+      <li><strong>ABN:</strong> 26 103 403 893</li>
       <li><strong>Location:</strong> Australia</li>
     </ul>
+    <p>We aim to respond to all enquiries within 2 business days.</p>
   </div>
 
 </div>
