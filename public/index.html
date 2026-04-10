@@ -433,16 +433,16 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <p>Paste text, upload a screenshot, drop an image, or link a URL — checked against trusted Australian sources.</p>
   </div>
 
-  <!-- USAGE COUNTER -->
+<!-- USAGE COUNTER -->
   <div class="usage-bar-wrap" id="usageBarWrap">
     <div class="usage-bar-top">
-      <span class="usage-label">Free checks today</span>
-      <span class="usage-count" id="usageCount">5 of 5 remaining</span>
+      <span class="usage-label" id="usageLabel">Free checks today</span>
+      <span class="usage-count" id="usageCount">3 of 3 remaining</span>
     </div>
     <div class="usage-track">
       <div class="usage-fill" id="usageFill" style="width:100%"></div>
     </div>
-    <div class="usage-reset" id="usageReset">Resets at midnight AEST</div>
+    <div class="usage-reset" id="usageReset">Sign up free for 5 checks/day</div>
   </div>
 
   <div class="mode-selector">
@@ -653,22 +653,33 @@ let uploadedBase64 = { screenshot: null, image: null };
 let stepInterval = null;
 
 /* ─── FREEMIUM USAGE TRACKING ─── */
-const FREE_LIMIT = 5;
+const GUEST_LIMIT = 3;
+const SIGNED_IN_LIMIT = 5;
+const GUEST_KEY = 'ts_guest_usage';
 const STORAGE_KEY = 'ts_usage';
 
 function getTodayKey() {
   return new Date().toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' });
 }
 
-function getUsage() {
+function getGuestUsage() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(GUEST_KEY);
     if (!raw) return { date: getTodayKey(), count: 0 };
     const data = JSON.parse(raw);
-    // Reset if it's a new day
     if (data.date !== getTodayKey()) return { date: getTodayKey(), count: 0 };
     return data;
   } catch { return { date: getTodayKey(), count: 0 }; }
+}
+
+function saveGuestUsage(usage) {
+  try { localStorage.setItem(GUEST_KEY, JSON.stringify(usage)); } catch {}
+}
+
+function isSignedIn() {
+  try {
+    return window.Clerk && window.Clerk.user !== null && window.Clerk.user !== undefined;
+  } catch { return false; }
 }
 
 function saveUsage(usage) {
@@ -679,31 +690,46 @@ function getRemainingChecks() {
   try {
     if (localStorage.getItem('ts_pro') === 'true') return 999;
   } catch {}
-  return Math.max(0, FREE_LIMIT - getUsage().count);
+  if (isSignedIn()) {
+    return Math.max(0, SIGNED_IN_LIMIT - getUsage().count);
+  } else {
+    return Math.max(0, GUEST_LIMIT - getGuestUsage().count);
+  }
 }
 
 function incrementUsage() {
-  const usage = getUsage();
-  usage.count += 1;
-  saveUsage(usage);
+  if(isSignedIn())  {
+    const usage = getUsage();
+    usage.count += 1;
+    saveUsage(usage);
+  } else {
+    const usage = getGuestUsage();
+    usage.count += 1;
+    saveGuestUsage(usage);
+  }
 }
 
 function updateUsageUI() {
   try {
     if (localStorage.getItem('ts_pro') === 'true') {
       document.getElementById('usageBarWrap').style.display = 'none';
-      document.getElementById('checkBtn').disabled = false;
-      document.getElementById('checkBtn').innerHTML = `
+      const btn = document.getElementById('checkBtn');
+      btn.disabled = false;
+      btn.style.background = '';
+      btn.innerHTML = `
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
           <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
           <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Check genuineness`;
+      btn.setAttribute('onclick', 'runCheck()');
       return;
     }
   } catch {}
+
   const remaining = getRemainingChecks();
-  const pct = (remaining / FREE_LIMIT) * 100;
+  const limit = isSignedIn() ? SIGNED_IN_LIMIT : GUEST_LIMIT;
+  const pct = (remaining / limit) * 100;
 
   const countEl = document.getElementById('usageCount');
   const fillEl = document.getElementById('usageFill');
@@ -711,21 +737,37 @@ function updateUsageUI() {
 
   countEl.textContent = remaining === 0
     ? 'No free checks remaining'
-    : `${remaining} of ${FREE_LIMIT} remaining`;
+    : ${remaining} of ${limit} remaining;
 
   countEl.className = 'usage-count' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
   fillEl.className = 'usage-fill' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
   fillEl.style.width = pct + '%';
 
+  const btn = document.getElementById('checkBtn');
+
   if (remaining === 0) {
     resetEl.textContent = 'Resets at midnight AEST — or upgrade to Pro for unlimited';
-    const btn = document.getElementById('checkBtn');
     btn.disabled = false;
     btn.style.background = 'var(--uncertain)';
-    btn.innerHTML = '🔒 Upgrade for more checks';
-    btn.setAttribute('onclick', 'showPaywall()');
-  } else if (remaining === 1) {
-    resetEl.textContent = 'Last free check today — upgrade to Pro for unlimited';
+    if (isSignedIn()) {
+      btn.innerHTML = '🔒 Upgrade for more checks';
+      btn.setAttribute('onclick', 'showPaywall()');
+    } else {
+      btn.innerHTML = '✨ Sign up for more checks';
+      btn.setAttribute('onclick', 'showSignupWall()');
+    }
+  } else {
+    btn.style.background = '';
+    btn.setAttribute('onclick', 'runCheck()');
+    if (remaining === 1) {
+      resetEl.textContent = isSignedIn()
+        ? 'Last free check today — upgrade to Pro for unlimited'
+        : 'Last free check — sign up free for 2 more today';
+    } else {
+      resetEl.textContent = isSignedIn()
+        ? 'Resets at midnight AEST'
+        : 'Sign up free for 5 checks/day';
+    }
   }
 }
 
@@ -737,11 +779,32 @@ function dismissPaywall() {
   document.getElementById('paywallOverlay').classList.remove('active');
 }
 
+function showSignupWall() {
+  document.getElementById('signupWallOverlay').classList.add('active');
+}
+
+function dismissSignupWall() {
+  document.getElementById('signupWallOverlay').classList.remove('active');
+}
+
+function goToSignup() {
+  window.location.href = window.Clerk.buildSignUpUrl({
+    redirectUrl: window.location.origin
+  });
+}
+
 function goToPro() {
-  // Replace this URL with your Stripe payment link when ready
-  // window.open('mailto:hello@smartlifeau.com.au?subject=TrustSmart AI Pro&body=Hi, I would like to upgrade to TrustSmart AI Pro.', '_blank');
-  // dismissPaywall();
-  window.location.href = 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00';
+  dismissPaywall();
+  dismissSignupWall();
+  // User is already signed in by the time they hit the paywall
+  // If somehow not signed in, sign up first then redirect to Stripe
+  if (isSignedIn()) {
+    window.location.href = 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00';
+  } else {
+    window.location.href = window.Clerk.buildSignUpUrl({
+      redirectUrl: 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00'
+    });
+  }
 }
 
 function switchMode(mode, btn) {
@@ -826,7 +889,11 @@ async function runCheck() {
 
   // Check usage limit before doing anything
   if (getRemainingChecks() === 0) {
-    showPaywall();
+    if (isSignedIn()) {
+      showPaywall();
+    } else {
+      showSignupWall();
+    }    
     return;
   }
 
@@ -1099,24 +1166,27 @@ async function initClerk() {
     try {
       localStorage.setItem('ts_pro', 'true');
       localStorage.removeItem('ts_usage');
+      localStorage.removeItem(GUEST_KEY);
     } catch {}
     window.history.replaceState({}, '', '/');
+  }
 
-    // Only redirect to sign-in if not already signed in
-    const user = window.Clerk.user;
-    if (user) {
-      showUserBar(user, true);
-    } else {
-      window.location.href = window.Clerk.buildSignInUrl({
-        redirectUrl: window.location.origin
-      });
+  const user = window.Clerk.user;
+
+  if (user) {
+    // ── Carry over guest usage to signed-in usage ──
+    const guestUsage = getGuestUsage();
+    const signedInUsage = getUsage();
+
+    // Only carry over if guest used checks today and signed-in counter is lower
+    if (guestUsage.count > 0 && signedInUsage.count < guestUsage.count) {
+      saveUsage({ date: getTodayKey(), count: guestUsage.count });
     }
-  } else {
-    // Normal page load — just show user bar if already signed in, no forced redirect
-    const user = window.Clerk.user;
-    if (user) {
-      showUserBar(user, false);
-    }
+
+    // Clear guest counter now that user is signed in
+    try { localStorage.removeItem(GUEST_KEY); } catch {}
+
+    showUserBar(user, justUpgraded);
   }
 
   updateUsageUI();
@@ -1162,6 +1232,30 @@ if (document.readyState === 'loading') {
 }
 
 </script>
+
+<!-- SIGNUP WALL MODAL -->
+<div class="paywall-overlay" id="signupWallOverlay">
+  <div class="paywall-sheet">
+    <div class="paywall-pill"></div>
+    <div class="paywall-icon">🎉</div>
+    <div class="paywall-title">You're on a <span>roll!</span></div>
+    <div class="paywall-sub">You've used your 3 free guest checks. Sign up free to get 2 more checks today — or upgrade to Pro for unlimited.</div>
+    <div class="paywall-features">
+      <div class="paywall-feature"><div class="paywall-feature-icon">✅</div>Free account — 5 checks per day</div>
+      <div class="paywall-feature"><div class="paywall-feature-icon">🔄</div>Resets every day at midnight AEST</div>
+      <div class="paywall-feature"><div class="paywall-feature-icon">⚡</div>Pro — unlimited checks, priority results</div>
+      <div class="paywall-feature"><div class="paywall-feature-icon">🇦🇺</div>Full Australian source library with Pro</div>
+    </div>
+    <button class="paywall-cta" onclick="goToSignup()">
+      ✨ Sign up free — get 2 more checks today
+    </button>
+    <button class="paywall-cta" onclick="goToPro()" style="background:var(--genuine);margin-top:0">
+      🚀 Upgrade to Pro — $7.99/month
+    </button>
+    <button class="paywall-dismiss" onclick="dismissSignupWall()">Maybe later — I'll wait until tomorrow</button>
+    <div class="paywall-note">Already have an account? <a href="#" onclick="goToSignIn()" style="color:var(--accent)">Sign in</a></div>
+  </div>
+</div>
 
 <!-- PAYWALL MODAL -->
 <div class="paywall-overlay" id="paywallOverlay">
