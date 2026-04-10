@@ -1166,27 +1166,44 @@ async function initClerk() {
     try {
       localStorage.setItem('ts_pro', 'true');
       localStorage.removeItem('ts_usage');
-      localStorage.removeItem(GUEST_KEY);
     } catch {}
     window.history.replaceState({}, '', '/');
   }
 
-  const user = window.Clerk.user;
+  // Listen for auth state changes (handles SSO redirects landing back)
+  window.Clerk.addListener(({ user }) => {
+    if (user) {
+      // Carry over guest usage on sign-in
+      try {
+        const guestRaw = localStorage.getItem('ts_guest_usage');
+        if (guestRaw) {
+          const guest = JSON.parse(guestRaw);
+          const existing = JSON.parse(localStorage.getItem('ts_usage') || '{"date":"","count":0}');
+          if (existing.count === 0) {
+            localStorage.setItem('ts_usage', JSON.stringify({ date: guest.date, count: guest.count }));
+          }
+          localStorage.removeItem('ts_guest_usage');
+        }
+      } catch {}
 
-  if (user) {
-    // ── Carry over guest usage to signed-in usage ──
-    const guestUsage = getGuestUsage();
-    const signedInUsage = getUsage();
-
-    // Only carry over if guest used checks today and signed-in counter is lower
-    if (guestUsage.count > 0 && signedInUsage.count < guestUsage.count) {
-      saveUsage({ date: getTodayKey(), count: guestUsage.count });
+      showUserBar(user, justUpgraded);
+    } else {
+      const barEl = document.getElementById('userBar');
+      barEl.classList.remove('visible');
+      barEl.style.background = '';
+      barEl.style.borderBottom = '';
     }
+    updateUsageUI();
+  });
 
-    // Clear guest counter now that user is signed in
-    try { localStorage.removeItem(GUEST_KEY); } catch {}
-
+  // Also handle already-signed-in state on fresh load
+  const user = window.Clerk.user;
+  if (user) {
     showUserBar(user, justUpgraded);
+  }
+
+  if (justUpgraded) {
+    window.history.replaceState({}, '', '/');
   }
 
   updateUsageUI();
