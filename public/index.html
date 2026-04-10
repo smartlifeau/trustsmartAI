@@ -686,15 +686,20 @@ function saveUsage(usage) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(usage)); } catch {}
 }
 
-function getRemainingChecks() {
+function getRemainingChecks(signedIn) {
   try {
     if (localStorage.getItem('ts_pro') === 'true') return 999;
   } catch {}
-  if (isSignedIn()) {
-    return Math.max(0, SIGNED_IN_LIMIT - getUsage().count);
-  } else {
-    return Math.max(0, GUEST_LIMIT - getGuestUsage().count);
-  }
+  if (signedIn === undefined) signedIn = !!(window.Clerk && window.Clerk.user);
+  const limit = signedIn ? 5 : 3;
+  const key = signedIn ? 'ts_usage' : 'ts_guest_usage';
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return limit;
+    const data = JSON.parse(raw);
+    if (data.date !== getTodayKey()) return limit;
+    return Math.max(0, limit - data.count);
+  } catch { return limit; }
 }
 
 function incrementUsage() {
@@ -713,27 +718,31 @@ function updateUsageUI() {
   try {
     if (localStorage.getItem('ts_pro') === 'true') {
       document.getElementById('usageBarWrap').style.display = 'none';
-      const btn = document.getElementById('checkBtn');
-      btn.disabled = false;
-      btn.style.background = '';
-      btn.innerHTML = `
+      document.getElementById('checkBtn').disabled = false;
+      document.getElementById('checkBtn').innerHTML = `
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
           <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
           <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Check genuineness`;
-      btn.setAttribute('onclick', 'runCheck()');
       return;
     }
   } catch {}
 
-  const remaining = getRemainingChecks();
-  const limit = isSignedIn() ? SIGNED_IN_LIMIT : GUEST_LIMIT;
+  const signedIn = !!(window.Clerk && window.Clerk.user);
+  const limit = signedIn ? 5 : 3;
+  const storageKey = signedIn ? 'ts_usage' : 'ts_guest_usage';
+  const remaining = getRemainingChecks(signedIn);
   const pct = (remaining / limit) * 100;
 
   const countEl = document.getElementById('usageCount');
   const fillEl = document.getElementById('usageFill');
   const resetEl = document.getElementById('usageReset');
+  const labelEl = document.getElementById('usageLabel');
+
+  if (labelEl) {
+    labelEl.textContent = signedIn ? 'Free checks today' : 'Guest checks today';
+  }
 
   countEl.textContent = remaining === 0
     ? 'No free checks remaining'
@@ -743,31 +752,23 @@ function updateUsageUI() {
   fillEl.className = 'usage-fill' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
   fillEl.style.width = pct + '%';
 
-  const btn = document.getElementById('checkBtn');
-
   if (remaining === 0) {
-    resetEl.textContent = 'Resets at midnight AEST — or upgrade to Pro for unlimited';
+    resetEl.textContent = signedIn
+      ? 'Resets at midnight AEST — or upgrade to Pro for unlimited'
+      : 'Sign up free for 5 checks/day — or upgrade to Pro for unlimited';
+    const btn = document.getElementById('checkBtn');
     btn.disabled = false;
     btn.style.background = 'var(--uncertain)';
-    if (isSignedIn()) {
-      btn.innerHTML = '🔒 Upgrade for more checks';
-      btn.setAttribute('onclick', 'showPaywall()');
-    } else {
-      btn.innerHTML = '✨ Sign up for more checks';
-      btn.setAttribute('onclick', 'showSignupWall()');
-    }
+    btn.innerHTML = '🔒 Upgrade for more checks';
+    btn.setAttribute('onclick', signedIn ? 'showPaywall()' : 'showSignupWall()');
+  } else if (remaining === 1) {
+    resetEl.textContent = signedIn
+      ? 'Last free check today — upgrade to Pro for unlimited'
+      : 'Last guest check — sign up free for 5 checks/day';
   } else {
-    btn.style.background = '';
-    btn.setAttribute('onclick', 'runCheck()');
-    if (remaining === 1) {
-      resetEl.textContent = isSignedIn()
-        ? 'Last free check today — upgrade to Pro for unlimited'
-        : 'Last free check — sign up free for 2 more today';
-    } else {
-      resetEl.textContent = isSignedIn()
-        ? 'Resets at midnight AEST'
-        : 'Sign up free for 5 checks/day';
-    }
+    resetEl.textContent = signedIn
+      ? 'Resets at midnight AEST'
+      : 'Sign up free for 5 checks/day';
   }
 }
 
