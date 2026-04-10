@@ -737,7 +737,7 @@ function updateUsageUI() {
 
   countEl.textContent = remaining === 0
     ? 'No free checks remaining'
-    : '${remaining} of ${limit} remaining';
+    : `${remaining} of ${limit} remaining`;
 
   countEl.className = 'usage-count' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
   fillEl.className = 'usage-fill' + (remaining === 0 ? ' empty' : remaining === 1 ? ' warn' : '');
