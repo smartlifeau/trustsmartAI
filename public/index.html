@@ -674,6 +674,7 @@ let currentMode = 'text';
 let uploadedFiles = { screenshot: null, image: null };
 let uploadedBase64 = { screenshot: null, image: null };
 let stepInterval = null;
+let clerkResolved = false;
 
 /* ─── FREEMIUM USAGE TRACKING ─── */
 const GUEST_LIMIT = 3;
@@ -775,12 +776,15 @@ function updateUsageUI() {
   if (headerSignInBtn) headerSignInBtn.style.display = signedIn ? 'none' : 'block';
   if (headerSignOutBtn) headerSignOutBtn.style.display = signedIn ? 'block' : 'none';
 
-  // Known user signed out — show sign-in prompt instead of guest usage bar
-  if (!signedIn && knownUser) {
+  // Known user signed out — only act after Clerk has confirmed auth state
+  if (!signedIn && knownUser && clerkResolved) {
     if (wrap) wrap.style.display = 'none';
     if (signInPrompt) signInPrompt.style.display = '';
     return;
   }
+
+  // Clerk not yet resolved — keep everything hidden, render nothing prematurely
+  if (!clerkResolved) return;
 
   // Reveal bar now that we know the correct state
   if (wrap) { wrap.style.display = ''; wrap.style.opacity = '1'; }
@@ -1275,6 +1279,7 @@ async function initClerk() {
       barEl.style.background = '';
       barEl.style.borderBottom = '';
     }
+    clerkResolved = true;
     updateUsageUI();
   });
 
@@ -1288,6 +1293,7 @@ async function initClerk() {
     window.history.replaceState({}, '', '/');
   }
 
+  clerkResolved = true;
   updateUsageUI();
 }
 
