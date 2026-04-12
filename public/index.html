@@ -441,16 +441,26 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <p>Paste text, upload a screenshot, drop an image, or link a URL — checked against trusted Australian sources.</p>
   </div>
 
-<!-- USAGE COUNTER -->
-  <div class="usage-bar-wrap" id="usageBarWrap">
+<!-- USAGE COUNTER — starts invisible to prevent flash before Clerk loads -->
+  <div class="usage-bar-wrap" id="usageBarWrap" style="opacity:0; transition:opacity 0.2s ease;">
     <div class="usage-bar-top">
       <span class="usage-label" id="usageLabel">Free checks today</span>
-      <span class="usage-count" id="usageCount">3 of 3 remaining</span>
+      <span class="usage-count" id="usageCount"></span>
     </div>
     <div class="usage-track">
-      <div class="usage-fill" id="usageFill" style="width:100%"></div>
+      <div class="usage-fill" id="usageFill" style="width:0%"></div>
     </div>
-    <div class="usage-reset" id="usageReset">Sign up free for 5 checks/day</div>
+    <div class="usage-reset" id="usageReset"></div>
+  </div>
+
+  <!-- Shown instead of usage bar when a known user is signed out -->
+  <div id="signInPrompt" style="display:none; padding:10px 16px; text-align:center; font-size:13px; color:var(--text-muted);">
+    👋 Welcome back —
+    <button onclick="goToSignIn()"
+      style="font-size:13px; color:var(--accent); background:none; border:none;
+             font-family:var(--font-body); font-weight:600; cursor:pointer; padding:0;">
+      Sign in to continue
+    </button>
   </div>
 
   <div class="mode-selector">
@@ -733,9 +743,13 @@ function incrementUsage() {
 }
 
 function updateUsageUI() {
+  const wrap = document.getElementById('usageBarWrap');
+  const signInPrompt = document.getElementById('signInPrompt');
+
   try {
     if (localStorage.getItem('ts_pro') === 'true') {
-      document.getElementById('usageBarWrap').style.display = 'none';
+      if (wrap) { wrap.style.display = 'none'; wrap.style.opacity = '1'; }
+      if (signInPrompt) signInPrompt.style.display = 'none';
       document.getElementById('checkBtn').disabled = false;
       document.getElementById('checkBtn').innerHTML = `
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
@@ -748,8 +762,20 @@ function updateUsageUI() {
   } catch {}
 
   const signedIn = !!(window.Clerk && window.Clerk.user);
+  const knownUser = localStorage.getItem('ts_known_user') === 'true';
   const headerSignInBtn = document.getElementById('headerSignInBtn');
   if (headerSignInBtn) headerSignInBtn.style.display = signedIn ? 'none' : 'block';
+
+  // Known user signed out — show sign-in prompt instead of guest usage bar
+  if (!signedIn && knownUser) {
+    if (wrap) wrap.style.display = 'none';
+    if (signInPrompt) signInPrompt.style.display = '';
+    return;
+  }
+
+  // Reveal bar now that we know the correct state
+  if (wrap) { wrap.style.display = ''; wrap.style.opacity = '1'; }
+  if (signInPrompt) signInPrompt.style.display = 'none';
   const limit = signedIn ? 5 : 3;
   const storageKey = signedIn ? 'ts_usage' : 'ts_guest_usage';
   const remaining = getRemainingChecks(signedIn);
@@ -1268,6 +1294,7 @@ function showUserBar(user, justUpgraded) {
   barEl.classList.add('visible');
   const headerSignInBtn = document.getElementById('headerSignInBtn');
   if (headerSignInBtn) headerSignInBtn.style.display = 'none';
+  try { localStorage.setItem('ts_known_user', 'true'); } catch {}
 }
 
 async function signOut() {
@@ -1277,6 +1304,7 @@ async function signOut() {
     barEl.classList.remove('visible');
     barEl.style.background = '';
     barEl.style.borderBottom = '';
+    updateUsageUI();
   } catch (e) {
     console.warn('Sign out failed:', e);
   }
