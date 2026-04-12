@@ -433,6 +433,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
                cursor:pointer; font-family:var(--font-body); font-weight:500;">
         Sign in
       </button>
+      <button id="headerSignOutBtn" onclick="signOut()"
+        style="display:none; font-size:11px; color:var(--text-muted); background:none;
+               border:1.5px solid var(--border); border-radius:20px; padding:4px 12px;
+               cursor:pointer; font-family:var(--font-body); font-weight:500;">
+        Sign out
+      </button>
     </div>
   </header>
 
@@ -746,10 +752,13 @@ function updateUsageUI() {
   const wrap = document.getElementById('usageBarWrap');
   const signInPrompt = document.getElementById('signInPrompt');
 
+  const headerSignOutBtn = document.getElementById('headerSignOutBtn');
+
   try {
     if (localStorage.getItem('ts_pro') === 'true') {
       if (wrap) { wrap.style.display = 'none'; wrap.style.opacity = '1'; }
       if (signInPrompt) signInPrompt.style.display = 'none';
+      if (headerSignOutBtn) headerSignOutBtn.style.display = 'block';
       document.getElementById('checkBtn').disabled = false;
       document.getElementById('checkBtn').innerHTML = `
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
@@ -765,6 +774,7 @@ function updateUsageUI() {
   const knownUser = localStorage.getItem('ts_known_user') === 'true';
   const headerSignInBtn = document.getElementById('headerSignInBtn');
   if (headerSignInBtn) headerSignInBtn.style.display = signedIn ? 'none' : 'block';
+  if (headerSignOutBtn) headerSignOutBtn.style.display = signedIn ? 'block' : 'none';
 
   // Known user signed out — show sign-in prompt instead of guest usage bar
   if (!signedIn && knownUser) {
@@ -1304,6 +1314,8 @@ async function signOut() {
     barEl.classList.remove('visible');
     barEl.style.background = '';
     barEl.style.borderBottom = '';
+    const headerSignOutBtn = document.getElementById('headerSignOutBtn');
+    if (headerSignOutBtn) headerSignOutBtn.style.display = 'none';
     updateUsageUI();
   } catch (e) {
     console.warn('Sign out failed:', e);
