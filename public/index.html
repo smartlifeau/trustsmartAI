@@ -827,13 +827,15 @@ function showSignIn() {
 function goToPro() {
   dismissPaywall();
   dismissSignupWall();
-  // User is already signed in by the time they hit the paywall
-  // If somehow not signed in, sign up first then redirect to Stripe
   if (isSignedIn()) {
+    // Already signed in — go straight to Stripe
     window.location.href = 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00';
   } else {
+    // Not signed in — sign up first, come back to site, then auto-launch Stripe.
+    // Never pass an external domain (buy.stripe.com) as Clerk's redirectUrl —
+    // Clerk only allows your own origins and will fail with a cert error otherwise.
     window.location.href = window.Clerk.buildSignUpUrl({
-      redirectUrl: 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00'
+      redirectUrl: window.location.origin + '?checkout=true'
     });
   }
 }
@@ -1192,6 +1194,7 @@ async function initClerk() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const justUpgraded = urlParams.get('upgraded') === 'true';
+  const justSignedUpForCheckout = urlParams.get('checkout') === 'true';
 
   if (justUpgraded) {
     try {
@@ -1199,6 +1202,13 @@ async function initClerk() {
       localStorage.removeItem('ts_usage');
     } catch {}
     window.history.replaceState({}, '', '/');
+  }
+
+  // Came back from Clerk sign-up with ?checkout=true — send straight to Stripe now
+  if (justSignedUpForCheckout && window.Clerk.user) {
+    window.history.replaceState({}, '', '/');
+    window.location.href = 'https://buy.stripe.com/test_9B6dR96UP8xo2Gv0AB1oI00';
+    return;
   }
 
   // Listen for auth state changes (handles SSO redirects landing back)
