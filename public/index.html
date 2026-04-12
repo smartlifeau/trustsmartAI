@@ -425,7 +425,15 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
       <span class="logo-name">Trust<span>Smart</span> AI</span>
     </div>
-    <span class="header-tag">AU · Beta</span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="header-tag">AU · Beta</span>
+      <button id="headerSignInBtn" onclick="showSignIn()"
+        style="display:none; font-size:11px; color:var(--accent); background:none;
+               border:1.5px solid var(--accent); border-radius:20px; padding:4px 12px;
+               cursor:pointer; font-family:var(--font-body); font-weight:500;">
+        Sign in
+      </button>
+    </div>
   </header>
 
   <div class="input-hero">
@@ -686,6 +694,16 @@ function saveUsage(usage) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(usage)); } catch {}
 }
 
+function getUsage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { date: getTodayKey(), count: 0 };
+    const data = JSON.parse(raw);
+    if (data.date !== getTodayKey()) return { date: getTodayKey(), count: 0 };
+    return data;
+  } catch { return { date: getTodayKey(), count: 0 }; }
+}
+
 function getRemainingChecks(signedIn) {
   try {
     if (localStorage.getItem('ts_pro') === 'true') return 999;
@@ -730,6 +748,8 @@ function updateUsageUI() {
   } catch {}
 
   const signedIn = !!(window.Clerk && window.Clerk.user);
+  const headerSignInBtn = document.getElementById('headerSignInBtn');
+  if (headerSignInBtn) headerSignInBtn.style.display = signedIn ? 'none' : 'block';
   const limit = signedIn ? 5 : 3;
   const storageKey = signedIn ? 'ts_usage' : 'ts_guest_usage';
   const remaining = getRemainingChecks(signedIn);
@@ -792,6 +812,16 @@ function goToSignup() {
   window.location.href = window.Clerk.buildSignUpUrl({
     redirectUrl: window.location.origin
   });
+}
+
+function goToSignIn() {
+  window.location.href = window.Clerk.buildSignInUrl({
+    redirectUrl: window.location.origin
+  });
+}
+
+function showSignIn() {
+  goToSignIn();
 }
 
 function goToPro() {
@@ -1226,6 +1256,8 @@ function showUserBar(user, justUpgraded) {
   }
 
   barEl.classList.add('visible');
+  const headerSignInBtn = document.getElementById('headerSignInBtn');
+  if (headerSignInBtn) headerSignInBtn.style.display = 'none';
 }
 
 async function signOut() {
@@ -1256,10 +1288,10 @@ if (document.readyState === 'loading') {
   <div class="paywall-sheet">
     <div class="paywall-pill"></div>
     <div class="paywall-icon">🎉</div>
-    <div class="paywall-title">You're on a <span>roll!</span></div>
-    <div class="paywall-sub">You've used your 3 free guest checks. Sign up free to get 2 more checks today — or upgrade to Pro for unlimited.</div>
+    <div class="paywall-title">Want to <span>keep going?</span></div>
+    <div class="paywall-sub">Create a free account to check more today — or go Pro for unlimited checks, no limits ever.</div>
     <div class="paywall-features">
-      <div class="paywall-feature"><div class="paywall-feature-icon">✅</div>Free account — 5 checks per day</div>
+      <div class="paywall-feature"><div class="paywall-feature-icon">✅</div>Free account — more checks, resets daily</div>
       <div class="paywall-feature"><div class="paywall-feature-icon">🔄</div>Resets every day at midnight AEST</div>
       <div class="paywall-feature"><div class="paywall-feature-icon">⚡</div>Pro — unlimited checks, priority results</div>
       <div class="paywall-feature"><div class="paywall-feature-icon">🇦🇺</div>Full Australian source library with Pro</div>

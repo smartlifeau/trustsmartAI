@@ -5,7 +5,14 @@
   "engines": {
     "node": ">=18"
   },
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step — static site'"
+  },
   "dependencies": {
     "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
   }
 }

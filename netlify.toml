@@ -11,5 +11,5 @@
   from = "/api/stripe-webhook"
   to = "/.netlify/functions/stripe-webhook"
   status = 200
-  foce = true
+  force = true
 
