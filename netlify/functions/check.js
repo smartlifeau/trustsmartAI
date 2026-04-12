@@ -15,7 +15,7 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid request body" }) };
   }
 
-  const { content, mode, imageData, imageMime } = body;
+  const { content, mode, imageData, imageMime, userId = 'guest', userEmail = '' } = body;
 
   // Inject real-time date so Claude never flags past events as "future"
   const now = new Date();
@@ -106,6 +106,19 @@ Rules:
       if (match) parsed = JSON.parse(match[0]);
       else throw new Error("Could not parse response");
     }
+
+    // Log per-user usage — visible in Netlify Dashboard → Functions → check logs
+    const usage = data.usage || {};
+    console.log(JSON.stringify({
+      event:        'check',
+      userId,
+      userEmail,
+      mode,
+      inputTokens:  usage.input_tokens  || 0,
+      outputTokens: usage.output_tokens || 0,
+      totalTokens:  (usage.input_tokens || 0) + (usage.output_tokens || 0),
+      timestamp:    new Date().toISOString()
+    }));
 
     return {
       statusCode: 200,

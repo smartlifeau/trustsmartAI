@@ -166,7 +166,7 @@ footer {
       <li><strong>Submitted content</strong> — text, URLs, images, or screenshots you submit for genuineness checking</li>
       <li><strong>Account information</strong> — name and email address if you create a free or Pro account via Clerk</li>
       <li><strong>Payment information</strong> — billing details for Pro subscribers, processed by Stripe</li>
-      <li><strong>Usage data</strong> — anonymised analytics such as pages visited, input mode used, and general usage patterns</li>
+      <li><strong>Usage data</strong> — analytics such as pages visited, input mode used, and general usage patterns; for signed-in users, we also log per-check metadata including input mode, token counts, and timestamp, associated with your account ID, to monitor fair use and enforce plan limits</li>
       <li><strong>Technical data</strong> — browser type, device type, and approximate geographic region, collected automatically via analytics</li>
       <li><strong>Contact information</strong> — only if you contact us directly via email</li>
     </ul>
@@ -283,6 +283,7 @@ footer {
       <li>To issue GST tax invoices for Pro subscriptions</li>
       <li>To display your name in the app when you are signed in</li>
       <li>To monitor and improve the performance and reliability of TrustSmart AI</li>
+      <li>To monitor per-user API usage to enforce plan limits and detect abuse or misuse of the service</li>
       <li>To understand aggregate usage patterns and improve the product</li>
       <li>To respond to enquiries you send us directly</li>
       <li>To comply with our legal obligations under Australian law, including GST obligations</li>
@@ -298,6 +299,7 @@ footer {
     <h2>How we store and protect your data</h2>
     <p>Submitted content (text, URLs, images, screenshots) is <strong>not stored</strong> by SmartLife AU. It is processed transiently and discarded after each check.</p>
     <p>Account data is stored by Clerk on their secure infrastructure. Payment data is stored by Stripe on their PCI DSS certified infrastructure. SmartLife AU does not maintain a separate database of user personal information.</p>
+    <p>Per-check usage metadata (account ID, input mode, token counts, and timestamp) is written to Netlify's serverless function logs for operational monitoring purposes. These logs are transient and are automatically deleted by Netlify within 24 hours on the current plan. This metadata does not include the content you submitted.</p>
     <p>Our infrastructure uses HTTPS encryption for all data in transit. Our serverless functions run in Netlify's secure environment and your Anthropic API key is never exposed to the browser.</p>
     <p>Any emails you send to us are stored in our business email system and retained only as long as necessary to resolve your enquiry.</p>
   </div>

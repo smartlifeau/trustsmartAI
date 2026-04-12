@@ -1016,6 +1016,12 @@ async function runCheck() {
 /* ─── API CALL — hits Netlify Function proxy, never exposes key to browser ─── */
 async function callAPI(content, mode, imagePayload) {
   const body = { content, mode };
+  // Attach user identity for server-side usage logging
+  try {
+    const user = window.Clerk && window.Clerk.user;
+    body.userId   = user ? user.id : 'guest';
+    body.userEmail = user ? (user.emailAddresses?.[0]?.emailAddress || '') : '';
+  } catch {}
   if (imagePayload) {
     body.imageData = imagePayload.data;
     body.imageMime = imagePayload.mediaType;
