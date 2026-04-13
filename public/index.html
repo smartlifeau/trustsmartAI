@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TrustSmart AI — Australia's Genuineness Checker</title>
 <meta name="description" content="Check if content is genuine. Paste text, upload a screenshot, drop an image or link a URL — verified against trusted Australian sources.">
-<!-- GA4 placeholder — replace G-XXXXXXXXXX with your measurement ID -->
-<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
+<!-- <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1321,13 +1319,18 @@ function showUserBar(user, justUpgraded) {
 async function signOut() {
   try {
     await window.Clerk.signOut();
+    localStorage.removeItem('ts_pro');
+    localStorage.removeItem('ts_usage');
     const barEl = document.getElementById('userBar');
-    barEl.classList.remove('visible');
-    barEl.style.background = '';
-    barEl.style.borderBottom = '';
+    if (barEl) {
+      barEl.classList.remove('visible');
+      barEl.style.background = '';
+      barEl.style.borderBottom = '';
+    }
     const headerSignOutBtn = document.getElementById('headerSignOutBtn');
     if (headerSignOutBtn) headerSignOutBtn.style.display = 'none';
-    updateUsageUI();
+    // Small delay to let Clerk's auth listener settle before re-rendering
+    setTimeout(() => updateUsageUI(), 150);
   } catch (e) {
     console.warn('Sign out failed:', e);
   }
