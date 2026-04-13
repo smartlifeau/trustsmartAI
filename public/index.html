@@ -1257,7 +1257,6 @@ async function initClerk() {
   // Listen for auth state changes (handles SSO redirects landing back)
   window.Clerk.addListener(({ user }) => {
     if (user) {
-      // Carry over guest usage on sign-in
       try {
         const guestRaw = localStorage.getItem('ts_guest_usage');
         if (guestRaw) {
@@ -1269,16 +1268,19 @@ async function initClerk() {
           localStorage.removeItem('ts_guest_usage');
         }
       } catch {}
-
+      clerkResolved = true;
       showUserBar(user, justUpgraded);
+      updateUsageUI();
     } else {
       const barEl = document.getElementById('userBar');
-      barEl.classList.remove('visible');
-      barEl.style.background = '';
-      barEl.style.borderBottom = '';
+      if (barEl) {
+        barEl.classList.remove('visible');
+        barEl.style.background = '';
+        barEl.style.borderBottom = '';
+      }
+      clerkResolved = true;
+      setTimeout(() => updateUsageUI(), 200);
     }
-    clerkResolved = true;
-    updateUsageUI();
   });
 
   // Also handle already-signed-in state on fresh load
