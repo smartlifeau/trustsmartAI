@@ -749,8 +749,19 @@ function incrementUsage() {
 function updateUsageUI() {
   const wrap = document.getElementById('usageBarWrap');
   const signInPrompt = document.getElementById('signInPrompt');
-
   const headerSignOutBtn = document.getElementById('headerSignOutBtn');
+  const headerSignInBtn = document.getElementById('headerSignInBtn');
+
+  // Known user signed out — show welcome back prompt immediately, before any other check
+  const signedIn = !!(window.Clerk && window.Clerk.user);
+  const knownUser = localStorage.getItem('ts_known_user') === 'true';
+  if (!signedIn && knownUser && clerkResolved) {
+    if (wrap) { wrap.style.display = 'none'; wrap.style.opacity = '1'; }
+    if (signInPrompt) signInPrompt.style.display = '';
+    if (headerSignInBtn) headerSignInBtn.style.display = 'block';
+    if (headerSignOutBtn) headerSignOutBtn.style.display = 'none';
+    return;
+  }
 
   try {
     if (localStorage.getItem('ts_pro') === 'true') {
@@ -768,18 +779,15 @@ function updateUsageUI() {
     }
   } catch {}
 
-  const signedIn = !!(window.Clerk && window.Clerk.user);
-  const knownUser = localStorage.getItem('ts_known_user') === 'true';
-  const headerSignInBtn = document.getElementById('headerSignInBtn');
   if (headerSignInBtn) headerSignInBtn.style.display = signedIn ? 'none' : 'block';
   if (headerSignOutBtn) headerSignOutBtn.style.display = signedIn ? 'block' : 'none';
 
-  // Known user signed out — only act after Clerk has confirmed auth state
-  if (!signedIn && knownUser && clerkResolved) {
-    if (wrap) wrap.style.display = 'none';
-    if (signInPrompt) signInPrompt.style.display = '';
-    return;
-  }
+  // // Known user signed out — only act after Clerk has confirmed auth state
+  // if (!signedIn && knownUser && clerkResolved) {
+  //   if (wrap) wrap.style.display = 'none';
+  //   if (signInPrompt) signInPrompt.style.display = '';
+  //   return;
+  // }
 
   // Clerk not yet resolved — keep everything hidden, render nothing prematurely
   if (!clerkResolved) return;
@@ -818,14 +826,34 @@ function updateUsageUI() {
     btn.style.background = 'var(--uncertain)';
     btn.innerHTML = '🔒 Upgrade for more checks';
     btn.setAttribute('onclick', signedIn ? 'showPaywall()' : 'showSignupWall()');
-  } else if (remaining === 1) {
+} else if (remaining === 1) {
     resetEl.textContent = signedIn
       ? 'Last free check today — upgrade to Pro for unlimited'
       : 'Last guest check — sign up free for 5 checks/day';
+    const btn = document.getElementById('checkBtn');
+    btn.disabled = false;
+    btn.style.background = 'var(--accent)';
+    btn.setAttribute('onclick', 'runCheck()');
+    btn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
+        <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Check genuineness`;
   } else {
     resetEl.textContent = signedIn
       ? 'Resets at midnight AEST'
       : 'Sign up free for 5 checks/day';
+    const btn = document.getElementById('checkBtn');
+    btn.disabled = false;
+    btn.style.background = 'var(--accent)';
+    btn.setAttribute('onclick', 'runCheck()');
+    btn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="6" stroke="white" stroke-width="1.5"/>
+        <path d="M5 7.5l1.8 1.8L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Check genuineness`;
   }
 }
 
