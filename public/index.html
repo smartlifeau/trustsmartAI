@@ -1256,6 +1256,7 @@ async function initClerk() {
 
   // Listen for auth state changes (handles SSO redirects landing back)
   window.Clerk.addListener(({ user }) => {
+    window._clerkListenerFired = true;
     if (user) {
       try {
         const guestRaw = localStorage.getItem('ts_guest_usage');
@@ -1291,16 +1292,11 @@ async function initClerk() {
 
   // Also handle already-signed-in state on fresh load
   const user = window.Clerk.user;
-  if (user) {
+  if (user && !window._clerkListenerFired) {
+    clerkResolved = true;
     showUserBar(user, justUpgraded);
+    updateUsageUI();
   }
-
-  if (justUpgraded) {
-    window.history.replaceState({}, '', '/');
-  }
-
-  clerkResolved = true;
-  updateUsageUI();
 }
 
 function showUserBar(user, justUpgraded) {
@@ -1369,7 +1365,7 @@ if (document.readyState === 'loading') {
       <div class="paywall-feature"><div class="paywall-feature-icon">🇦🇺</div>Full Australian source library with Pro</div>
     </div>
     <button class="paywall-cta" onclick="goToSignup()">
-      ✨ Sign up free — get 2 more checks today
+      ✨ Sign up free — keep checking today
     </button>
     <button class="paywall-cta" onclick="goToPro()" style="background:var(--genuine);margin-top:0">
       🚀 Upgrade to Pro — $7.99/month
@@ -1385,7 +1381,7 @@ if (document.readyState === 'loading') {
     <div class="paywall-pill"></div>
     <div class="paywall-icon">🔍</div>
     <div class="paywall-title">You've used your <span>free checks</span></div>
-    <div class="paywall-sub">You've used all 5 free checks for today. Upgrade to Pro for unlimited checks, priority analysis, and no daily limits.</div>
+    <div class="paywall-sub">You've used all your free checks for today. Upgrade to Pro for unlimited checks, priority analysis, and no daily limits.</div>
     <div class="paywall-features">
       <div class="paywall-feature"><div class="paywall-feature-icon">♾️</div>Unlimited genuineness checks every day</div>
       <div class="paywall-feature"><div class="paywall-feature-icon">⚡</div>Priority processing — faster results</div>
