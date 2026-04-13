@@ -82,3 +82,15 @@ netlify dev
 ```
 
 Then open http://localhost:8888
+
+localStorage.setItem('ts_guest_usage', JSON.stringify({date: new Date().toLocaleDateString('en-AU', {timeZone:'Australia/Sydney'}), count: 3})); 
+
+location.reload();
+
+
+Test signed-in limit (5 checks):local
+
+
+localStorage.setItem('ts_usage', JSON.stringify({date: new Date().toLocaleDateString('en-AU', {timeZone:'Australia/Sydney'}), count: 5}));
+
+ location.reload();
