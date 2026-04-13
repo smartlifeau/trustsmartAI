@@ -1319,7 +1319,7 @@ function showUserBar(user, justUpgraded) {
 async function signOut() {
   try {
     await window.Clerk.signOut();
-    localStorage.removeItem('ts_pro');
+    //localStorage.removeItem('ts_pro');
     localStorage.removeItem('ts_usage');
     const barEl = document.getElementById('userBar');
     if (barEl) {
