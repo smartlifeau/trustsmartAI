@@ -1268,9 +1268,15 @@ async function initClerk() {
           localStorage.removeItem('ts_guest_usage');
         }
       } catch {}
-      clerkResolved = true;
-      showUserBar(user, justUpgraded);
-      updateUsageUI();
+        // Sync Pro status from Clerk metadata (source of truth set by Stripe webhook)
+        if (user.publicMetadata?.isPro === true) {
+          localStorage.setItem('ts_pro', 'true');
+        } else {
+          localStorage.removeItem('ts_pro');
+        }
+        clerkResolved = true;
+        showUserBar(user, justUpgraded);
+        updateUsageUI();
     } else {
       const barEl = document.getElementById('userBar');
       if (barEl) {
@@ -1321,7 +1327,7 @@ function showUserBar(user, justUpgraded) {
 async function signOut() {
   try {
     await window.Clerk.signOut();
-    //localStorage.removeItem('ts_pro');
+    localStorage.removeItem('ts_pro');
     localStorage.removeItem('ts_usage');
     const barEl = document.getElementById('userBar');
     if (barEl) {

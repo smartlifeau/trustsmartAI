@@ -21,12 +21,46 @@ exports.handler = async function (event) {
 
   const data = stripeEvent.data.object;
 
-  if (stripeEvent.type === 'customer.subscription.created' || stripeEvent.type === 'invoice.payment_succeeded') {
-    console.log('Pro activated:', data.customer);
+  // Helper — find Clerk userId from Stripe customer email
+  async function getClerkUserId(email) {
+    if (!email) return null;
+    const response = await fetch(
+      `https://api.clerk.com/v1/users?email_address=${encodeURIComponent(email)}`,
+      { headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` } }
+    );
+    const users = await response.json();
+    return users?.[0]?.id || null;
+  }
+
+  // Helper — update Clerk user publicMetadata
+  async function setClerkProStatus(userId, isPro) {
+    if (!userId) return;
+    await fetch(`https://api.clerk.com/v1/users/${userId}/metadata`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ public_metadata: { isPro } })
+    });
+    console.log(`Clerk user ${userId} isPro set to ${isPro}`);
+  }
+
+  if (
+    stripeEvent.type === 'customer.subscription.created' ||
+    stripeEvent.type === 'invoice.payment_succeeded'
+  ) {
+    const email = data.customer_email || data?.customer_details?.email || null;
+    const userId = await getClerkUserId(email);
+    await setClerkProStatus(userId, true);
+    console.log('Pro activated:', data.customer, email);
   }
 
   if (stripeEvent.type === 'customer.subscription.deleted') {
-    console.log('Pro cancelled:', data.customer);
+    const email = data.customer_email || null;
+    const userId = await getClerkUserId(email);
+    await setClerkProStatus(userId, false);
+    console.log('Pro cancelled:', data.customer, email);
   }
 
   return {
